@@ -14,11 +14,8 @@ export interface RegisterRequest {
   siret?: string;
 }
 
-export interface AuthResponse {
-  user: User;
-  access: string;
-  refresh: string;
-}
+// No more AuthResponse with tokens!
+// Django sets HttpOnly cookies directly — the frontend only receives the user.
 
 export interface User {
   id: number;
