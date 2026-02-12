@@ -25,4 +25,7 @@
 
   --color-bg-primary: #F3F4F6;
   --color-bg-secondary: rgb(255 255 255 / 0.6);
+
+  --text-caption: 13px;
+  --text-caption--line-height: 20px;
 }

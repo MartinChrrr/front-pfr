@@ -1,60 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import Button from './components/ui/Button'
-import Modal from './components/ui/Modal'
-import SidebarItem from './components/ui/SidebarItem'
-import type { LucideIcon } from "lucide-react";
-import { Home } from "lucide-react";
-import SidebarItemGroup from './components/ui/SidebarItemGroup'
+import {
+  LayoutDashboard,
+  FileText,
+  Users,
+  Calendar,
+  CircleUserRound,
+  Settings,
+} from 'lucide-react'
+import Sidebar from './components/ui/Sidebar'
+import type { SidebarEntry } from './components/ui/Sidebar'
+import DevisTable, { type DevisRow } from './components/ui/DevisTable'
+
+const sidebarItems: SidebarEntry[] = [
+  { type: "item", label: "Dashboard", icon: LayoutDashboard, to: "/" },
+  {
+    type: "group",
+    label: "Devis Et Factures",
+    icon: FileText,
+    subItems: [
+      { label: "Devis" },
+      { label: "Factures" },
+    ],
+  },
+  { type: "item", label: "Clients", icon: Users, to: "/clients" },
+  { type: "item", label: "Calendrier", icon: Calendar, to: "/calendrier" },
+  { type: "item", label: "Comptes", icon: CircleUserRound, to: "/comptes" },
+  { type: "item", label: "Settings", icon: Settings, to: "/settings" },
+];
+
+const sampleRows: DevisRow[] = [
+  { id: 1, number: "DEV-001", date: "12/01/2025", client: "Entreprise ABC", echeance: "12/02/2025", status: "ENVOYE", ttc: 1250.00 },
+  { id: 2, number: "DEV-002", date: "15/01/2025", client: "Studio Graphique Martin", echeance: "15/02/2025", status: "ACCEPTE", ttc: 3400.50 },
+  { id: 3, number: "DEV-003", date: "20/01/2025", client: "SARL Dupont & Fils", echeance: "20/02/2025", status: "BROUILLON", ttc: 780.00 },
+  { id: 4, number: "DEV-004", date: "25/01/2025", client: "Tech Solutions SAS", echeance: "25/02/2025", status: "REFUSE", ttc: 5200.00 },
+  { id: 5, number: "DEV-005", date: "01/02/2025", client: "Boulangerie du Coin", echeance: "01/03/2025", status: "EXPIRE", ttc: 620.00 },
+  { id: 6, number: "DEV-006", date: "05/02/2025", client: "Agence Web Créative", echeance: "05/03/2025", status: "ENVOYE", ttc: 8900.00 },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [open, setOpen] = useState(false);
-
   return (
-    <>
-      <h1 className="text-3xl font-bold text-white bg-primary-700">Welcome to My App</h1>
-      <br/>
-      <br/>
-      <br/>
-      <SidebarItem
-        to='/dashboard' 
-        label="Dashboard" 
-        icon={Home} 
+    <div className="flex h-screen">
+      <Sidebar
+        items={sidebarItems}
+        logo={
+          <span className="text-xl font-bold text-white">Logo</span>
+        }
+        name="Paul Vigneron"
+        email="paul.vigneron@gmail.com"
+        onLogout={() => alert("Déconnexion")}
       />
-      <SidebarItemGroup 
-        label="Group 1"
-        icon={Home} 
-        subItems={[
-          {
-            label: "Overview",
-            onClick: () => console.log("Overview"),
-          },
-          {
-            label: "Analytics",
-            onClick: () => console.log("Analytics"),
-          },
-      ]}
-      />
-      {/* <Modal
-        title="Supprimer l’élément"
-        isOpen={open}
-        onClose={() => setOpen(false)}
-      >  
-          <div>Bonjour</div>
-          <div>Bonjour</div>
 
-      </Modal>
-      <div className='m-10'>
-        <Button onClick={() => setOpen(true)}>Ouvrir le modal</Button>
-        <br/>
-        <br/>
-       
-
-      </div> */}
-    </>
+      <main className="flex-1 overflow-auto bg-bg-primary p-10">
+        <h1 className="text-2xl font-bold text-text-black mb-6">Devis</h1>
+        <DevisTable rows={sampleRows} onMore={(id) => alert(`Action sur devis #${id}`)} />
+      </main>
+    </div>
   )
 }
 
