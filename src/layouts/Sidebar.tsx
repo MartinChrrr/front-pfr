@@ -16,7 +16,7 @@ type SidebarGroupEntry = {
   type: "group";
   label: string;
   icon: LucideIcon;
-  subItems: { label: string; onClick?: () => void }[];
+  subItems: { label: string; to?: string; onClick?: () => void }[];
   defaultOpen?: boolean;
 };
 

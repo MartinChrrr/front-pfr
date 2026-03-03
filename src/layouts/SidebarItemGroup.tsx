@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 type SubItem = {
   label: string;
+  to?: string;
   onClick?: () => void;
 };
 
@@ -42,18 +44,35 @@ export default function SidebarItemGroup({
 
       {isOpen && (
         <div className="flex flex-col gap-px px-[5px]">
-          {subItems.map((item) => (
-            <button
-              key={item.label}
-              type="button"
-              onClick={item.onClick}
-              className="flex items-center rounded-lg px-10 py-[11.5px] bg-primary-500 hover:bg-primary-700 transition-colors duration-300 ease-out cursor-pointer"
-            >
-              <span className="text-[13px] font-medium leading-[20px] text-white">
-                {item.label}
-              </span>
-            </button>
-          ))}
+          {subItems.map((item) => {
+            const className =
+              "flex items-center rounded-lg px-10 py-[11.5px] transition-colors duration-300 ease-out cursor-pointer";
+
+            return item.to ? (
+              <NavLink
+                key={item.label}
+                to={item.to}
+                className={({ isActive }) =>
+                  `${className} ${isActive ? "bg-primary-300" : "bg-primary-500 hover:bg-primary-700"}`
+                }
+              >
+                <span className="text-[13px] font-medium leading-[20px] text-white">
+                  {item.label}
+                </span>
+              </NavLink>
+            ) : (
+              <button
+                key={item.label}
+                type="button"
+                onClick={item.onClick}
+                className={`${className} bg-primary-500 hover:bg-primary-700`}
+              >
+                <span className="text-[13px] font-medium leading-[20px] text-white">
+                  {item.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
