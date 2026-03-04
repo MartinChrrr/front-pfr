@@ -1,5 +1,6 @@
+import { SquareX, SquarePen, Trash2 } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
-import DevisTable, { type DevisRow } from "../components/ui/DevisTable";
+import DevisTable, { type DevisRow } from "../components/ui/table/DevisTable";
 
 const sampleRows: DevisRow[] = [
   { id: 1, number: "DEV-001", date: "12/01/2025", client: "Entreprise ABC", echeance: "12/02/2025", status: "ENVOYE", ttc: 1250.0 },
@@ -14,7 +15,14 @@ export default function Quotes() {
   return (
     <MainLayout>
       <h1 className="text-2xl font-bold text-text-black">Devis</h1>
-      <DevisTable rows={sampleRows} onMore={(id) => alert(`Action sur devis #${id}`)} />
+      <DevisTable
+        rows={sampleRows}
+        menuItems={(id) => [
+          { label: "Non Valider", icon: <SquareX size={18} />, onClick: () => alert(`Non valider devis #${id}`) },
+          { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier devis #${id}`) },
+          { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer devis #${id}`) },
+        ]}
+      />
     </MainLayout>
   );
 }
