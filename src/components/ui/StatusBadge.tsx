@@ -1,15 +1,21 @@
 import type { QuoteStatus } from "../../types/quote";
+import type { InvoiceStatus } from "../../types/invoice";
 
-const statusConfig: Record<QuoteStatus, { label: string; classes: string }> = {
-  REFUSE: { label: "Non payé", classes: "border-alert text-alert" },
-  ACCEPTE: { label: "Payé", classes: "border-success text-success" },
+type Status = QuoteStatus | InvoiceStatus;
+
+const statusConfig: Record<Status, { label: string; classes: string }> = {
+  REFUSE: { label: "Refusé", classes: "border-alert text-alert" },
+  ACCEPTE: { label: "Accepté", classes: "border-success text-success" },
   ENVOYE: { label: "En attente", classes: "border-pending text-pending" },
   BROUILLON: { label: "Brouillon", classes: "border-unselected text-text-black" },
   EXPIRE: { label: "Expiré", classes: "border-alert text-alert" },
+  ENVOYEE: { label: "Envoyée", classes: "border-pending text-pending" },
+  PAYEE: { label: "Payée", classes: "border-success text-success" },
+  EN_RETARD: { label: "En retard", classes: "border-alert text-alert" },
 };
 
 interface StatusBadgeProps {
-  status: QuoteStatus;
+  status: Status;
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
