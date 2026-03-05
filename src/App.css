@@ -28,4 +28,14 @@
 
   --text-caption: 13px;
   --text-caption--line-height: 20px;
+
+  --text-medium-bold: 16px;
+  --text-medium-bold--line-height: 24px;
+  --text-medium-bold--font-weight: 700;
+
+  --text-small-medium: 12px;
+  --text-small-medium--line-height: 18px;
+  --text-small-medium--font-weight: 500;
+
+
 }
