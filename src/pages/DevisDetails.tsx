@@ -1,3 +1,5 @@
+import { fakeDevis } from "../.temp/MockedData";
+import QuotesDetailsCard from "../components/Quotes/QuotesDetailsCard";
 import DetailsLayout from "../layouts/DetailsLayout";
 import { Mail, SquarePen, FileText } from "lucide-react";
 
@@ -10,7 +12,10 @@ export default function DevisDetails() {
         buttonSecondary: { title: "Modifier", icon: SquarePen },
       }}
     >
-      <p className="text-text-placeholder">Détails du devis.</p>
+      <div className="flex flex-row gap-5 py-20 px-10 w-full">
+        <QuotesDetailsCard quote={fakeDevis[0]} className="w-2/3" />
+      </div>
+      
     </DetailsLayout>
   );
 }

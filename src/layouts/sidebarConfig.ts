@@ -20,7 +20,7 @@ export const sidebarItems: SidebarEntry[] = [
     ],
   },
   { type: "item", label: "Clients", icon: Users, to: "/clients" },
-  { type: "item", label: "Calendrier", icon: Calendar, to: "/calendrier" },
-  { type: "item", label: "Comptes", icon: CircleUserRound, to: "/comptes" },
+  // { type: "item", label: "Calendrier", icon: Calendar, to: "/calendrier" },
+  // { type: "item", label: "Comptes", icon: CircleUserRound, to: "/comptes" },
   { type: "item", label: "Settings", icon: Settings, to: "/settings" },
 ];

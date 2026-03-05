@@ -14,15 +14,24 @@ const statusConfig: Record<Status, { label: string; classes: string }> = {
   EN_RETARD: { label: "En retard", classes: "border-alert text-alert" },
 };
 
+type Size = "sm" | "md" | "lg";
+
+const sizeClasses: Record<Size, string> = {
+  sm: "px-2 py-1 text-small-medium",
+  md: "px-2.5 py-2 text-caption",
+  lg: "px-3 py-2.5 text-body",
+};
+
 interface StatusBadgeProps {
   status: Status;
+  size?: Size;
 }
 
-export default function StatusBadge({ status }: StatusBadgeProps) {
+export default function StatusBadge({ status, size = "md" }: StatusBadgeProps) {
   const { label, classes } = statusConfig[status];
 
   return (
-    <span className={`inline-flex items-center justify-center border rounded-2xl px-2.5 py-2 w-fit text-caption font-medium ${classes}`}>
+    <span className={`inline-flex items-center justify-center border rounded-2xl w-fit font-medium ${sizeClasses[size]} ${classes}`}>
       {label}
     </span>
   );
