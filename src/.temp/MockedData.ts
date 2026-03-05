@@ -52,7 +52,7 @@ export const fakeClient: Client = {
 
 export const fakeDevis: Quote[] = [
   {
-    id: 1, user_id: 1, client_id: 1, number: "DEV-2024-001", issue_date: "2024-01-10", validity_date: "2024-02-10", status: "ACCEPTE", subject: "Création site vitrine", notes: "",
+    id: 1, user_id: 1, client: fakeClient, number: "DEV-2024-001", issue_date: "2024-01-10", validity_date: "2024-02-10", status: "ACCEPTE", subject: "Création site vitrine", notes: "",
     total_excl_tax: 3000, total_vat: 600, total_incl_tax: 3600,
     lines: [
       { id: 1, order: 1, label: "Maquette UI/UX", description: "Design des pages principales", quantity: 1, unit: "forfait", unit_price_excl_tax: 1500, vat_rate: 20, amount_excl_tax: 1500 },
@@ -66,7 +66,7 @@ export const fakeDevis: Quote[] = [
     created_at: "2024-01-10T00:00:00Z", updated_at: "2024-01-20T00:00:00Z",
   },
   {
-    id: 2, user_id: 1, client_id: 1, number: "DEV-2024-005", issue_date: "2024-03-15", validity_date: "2024-04-15", status: "ENVOYE", subject: "Maintenance annuelle", notes: "Inclut hébergement",
+    id: 2, user_id: 1, client: fakeClient, number: "DEV-2024-005", issue_date: "2024-03-15", validity_date: "2024-04-15", status: "ENVOYE", subject: "Maintenance annuelle", notes: "Inclut hébergement",
     total_excl_tax: 1200, total_vat: 240, total_incl_tax: 1440,
     lines: [
       { id: 3, order: 1, label: "Maintenance", description: "Support et mises à jour mensuelles", quantity: 12, unit: "mois", unit_price_excl_tax: 100, vat_rate: 20, amount_excl_tax: 1200 },
@@ -78,7 +78,7 @@ export const fakeDevis: Quote[] = [
     created_at: "2024-03-15T00:00:00Z", updated_at: "2024-03-16T00:00:00Z",
   },
   {
-    id: 3, user_id: 1, client_id: 1, number: "DEV-2024-008", issue_date: "2024-05-01", validity_date: "2024-06-01", status: "BROUILLON", subject: "Refonte identité visuelle", notes: "",
+    id: 3, user_id: 1, client: fakeClient, number: "DEV-2024-008", issue_date: "2024-05-01", validity_date: "2024-06-01", status: "BROUILLON", subject: "Refonte identité visuelle", notes: "",
     total_excl_tax: 2500, total_vat: 500, total_incl_tax: 3000,
     lines: [
       { id: 4, order: 1, label: "Logo", description: "Création logo + déclinaisons", quantity: 1, unit: "forfait", unit_price_excl_tax: 1500, vat_rate: 20, amount_excl_tax: 1500 },

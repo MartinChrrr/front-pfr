@@ -1,3 +1,5 @@
+import type { Client } from './client';
+
 // --- Quote Types (Devis) ---
 
 export type QuoteStatus = 'BROUILLON' | 'ENVOYE' | 'ACCEPTE' | 'REFUSE' | 'EXPIRE';
@@ -5,7 +7,7 @@ export type QuoteStatus = 'BROUILLON' | 'ENVOYE' | 'ACCEPTE' | 'REFUSE' | 'EXPIR
 export interface Quote {
   id: number;
   user_id: number;
-  client_id: number;
+  client: Client;
   number: string;
   issue_date: string;
   validity_date: string;
