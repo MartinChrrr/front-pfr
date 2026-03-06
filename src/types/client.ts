@@ -1,55 +1,49 @@
-// --- Client Types ---
-
-export interface Client {
-  id: number;
-  user_id: number;
-  company_name: string;
-  siret: string;
-  email: string;
-  phone: string;
-  contact_name: string;
-  contact_email: string;
-  contact_phone: string;
-  notes: string;
-  addresses: Address[];
-  created_at: string;
-  updated_at: string;
-}
-
-export type AddressType = 'SIEGE' | 'FACTURATION' | 'LIVRAISON';
+export type AddressType = "SIEGE" | "FACTURATION" | "LIVRAISON";
 
 export interface Address {
   id: number;
-  client_id: number;
   type: AddressType;
-  line1: string;
-  line2: string;
-  postal_code: string;
-  city: string;
-  country: string;
+  ligne1: string;
+  ligne2: string;
+  code_postal: string;
+  ville: string;
+  pays: string;
   created_at: string;
   updated_at: string;
 }
 
-// --- Payloads for create/update ---
-
-export interface ClientCreatePayload {
-  company_name: string;
-  siret?: string;
-  email?: string;
-  phone?: string;
-  contact_name?: string;
-  contact_email?: string;
-  contact_phone?: string;
-  notes?: string;
-  addresses?: AddressCreatePayload[];
+export interface AddressInput {
+  type: AddressType;
+  ligne1: string;
+  ligne2?: string;
+  code_postal: string;
+  ville: string;
+  pays?: string;
 }
 
-export interface AddressCreatePayload {
-  type: AddressType;
-  line1: string;
-  line2?: string;
-  postal_code: string;
-  city: string;
-  country?: string;
+export interface Client {
+  id: number;
+  raison_sociale: string;
+  siret: string;
+  email: string;
+  telephone: string;
+  contact_nom: string;
+  contact_email: string;
+  contact_telephone: string;
+  notes: string;
+  adresses: Address[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ClientInput {
+  raison_sociale: string;
+  siret?: string;
+  email?: string;
+  telephone?: string;
+  contact_nom?: string;
+  contact_email?: string;
+  contact_telephone?: string;
+  notes?: string;
+  adresses?: AddressInput[];
 }

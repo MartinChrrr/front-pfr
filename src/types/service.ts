@@ -1,25 +1,22 @@
-// --- Service Types (Prestation) ---
+export type ServiceUnit = "heure" | "jour" | "forfait";
 
-export type Unit = 'hour' | 'day' | 'flat_rate' | 'unit';
-
-export type VatRate = 20 | 10 | 5.5 | 0;
+export type VatRate = "20.00" | "10.00" | "5.50" | "0.00";
 
 export interface Service {
   id: number;
-  user_id: number;
   label: string;
   description: string;
-  unit_price_excl_tax: number;
-  unit: Unit;
-  vat_rate: VatRate;
+  unit_price_excl_tax: string;
+  unit: ServiceUnit;
+  taux_tva: VatRate;
   created_at: string;
   updated_at: string;
 }
 
-export interface ServiceCreatePayload {
+export interface ServiceInput {
   label: string;
   description?: string;
-  unit_price_excl_tax: number;
-  unit: Unit;
-  vat_rate: VatRate;
+  unit_price_excl_tax: string;
+  unit?: ServiceUnit;
+  taux_tva?: VatRate;
 }

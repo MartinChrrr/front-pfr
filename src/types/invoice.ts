@@ -1,65 +1,62 @@
-// --- Invoice Types (Facture) ---
+import type { Client } from "./client";
 
-export type InvoiceStatus = 'BROUILLON' | 'ENVOYEE' | 'PAYEE' | 'EN_RETARD';
+export type InvoiceStatus = "BROUILLON" | "ENVOYEE" | "PAYEE" | "EN_RETARD";
+
+export interface InvoiceLine {
+  id?: number;
+  ordre: number;
+  libelle: string;
+  description: string;
+  quantite: string;
+  unite: string;
+  prix_unitaire_ht: string;
+  taux_tva: string;
+  montant_ht: string;
+}
+
+export interface InvoiceHistory {
+  id: number;
+  ancien_statut: InvoiceStatus | null;
+  nouveau_statut: InvoiceStatus;
+  created_at: string;
+}
 
 export interface Invoice {
   id: number;
-  user_id: number;
-  client_id: number;
-  source_quote_id: number | null;
-  number: string;
-  issue_date: string;
-  due_date: string;
-  status: InvoiceStatus;
-  subject: string;
+  utilisateur: number;
+  client: Client;
+  devis_origine: number | null;
+  numero: string;
+  date_emission: string;
+  date_echeance: string;
+  statut: InvoiceStatus;
+  objet: string;
   notes: string;
-  total_excl_tax: number;
-  total_vat: number;
-  total_incl_tax: number;
-  lines: InvoiceLine[];
-  history: InvoiceHistoryEntry[];
+  total_ht: string;
+  total_tva: string;
+  total_ttc: string;
+  lignes: InvoiceLine[];
+  historique: InvoiceHistory[];
   created_at: string;
   updated_at: string;
 }
 
-export interface InvoiceLine {
+export interface InvoiceLineInput {
   id?: number;
-  order: number;
-  label: string;
-  description: string;
-  quantity: number;
-  unit: string;
-  unit_price_excl_tax: number;
-  vat_rate: number;
-  amount_excl_tax: number;
-}
-
-export interface InvoiceHistoryEntry {
-  id: number;
-  invoice_id: number;
-  previous_status: InvoiceStatus | null;
-  new_status: InvoiceStatus;
-  created_at: string;
-}
-
-// --- Payloads ---
-
-export interface InvoiceCreatePayload {
-  client_id: number;
-  source_quote_id?: number;
-  issue_date: string;
-  due_date: string;
-  subject: string;
-  notes?: string;
-  lines: InvoiceLinePayload[];
-}
-
-export interface InvoiceLinePayload {
-  order: number;
-  label: string;
+  ordre?: number;
+  libelle: string;
   description?: string;
-  quantity: number;
-  unit: string;
-  unit_price_excl_tax: number;
-  vat_rate: number;
+  quantite: string;
+  unite?: string;
+  prix_unitaire_ht: string;
+  taux_tva: string;
+}
+
+export interface InvoiceInput {
+  client_id: number;
+  date_emission?: string;
+  date_echeance?: string;
+  objet?: string;
+  notes?: string;
+  lignes: InvoiceLineInput[];
 }
