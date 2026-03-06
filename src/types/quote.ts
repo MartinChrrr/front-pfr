@@ -1,65 +1,60 @@
-import type { Client } from './client';
+import type { Client } from "./client";
 
-// --- Quote Types (Devis) ---
+export type QuoteStatus = "BROUILLON" | "ENVOYE" | "ACCEPTE" | "REFUSE" | "EXPIRE";
 
-export type QuoteStatus = 'BROUILLON' | 'ENVOYE' | 'ACCEPTE' | 'REFUSE' | 'EXPIRE';
+export interface QuoteLine {
+  id?: number;
+  ordre: number;
+  libelle: string;
+  description: string;
+  quantite: string;
+  unite: string;
+  prix_unitaire_ht: string;
+  taux_tva: string;
+  montant_ht: string;
+}
+
+export interface QuoteHistory {
+  id: number;
+  ancien_statut: QuoteStatus | null;
+  nouveau_statut: QuoteStatus;
+  created_at: string;
+}
 
 export interface Quote {
   id: number;
-  user_id: number;
+  utilisateur: number;
   client: Client;
-  number: string;
-  issue_date: string;
-  validity_date: string;
-  status: QuoteStatus;
-  subject: string;
+  numero: string;
+  date_emission: string;
+  date_validite: string;
+  statut: QuoteStatus;
+  objet: string;
   notes: string;
-  total_excl_tax: number;
-  total_vat: number;
-  total_incl_tax: number;
-  lines: QuoteLine[];
-  history: QuoteHistoryEntry[];
+  total_ht: string;
+  total_tva: string;
+  total_ttc: string;
+  lignes: QuoteLine[];
+  historique: QuoteHistory[];
   created_at: string;
   updated_at: string;
 }
 
-export interface QuoteLine {
-  id?: number;
-  order: number;
-  label: string;
-  description: string;
-  quantity: number;
-  unit: string;
-  unit_price_excl_tax: number;
-  vat_rate: number;
-  amount_excl_tax: number;
-}
-
-export interface QuoteHistoryEntry {
-  id: number;
-  quote_id: number;
-  previous_status: QuoteStatus | null;
-  new_status: QuoteStatus;
-  created_at: string;
-}
-
-// --- Payloads ---
-
-export interface QuoteCreatePayload {
-  client_id: number;
-  issue_date: string;
-  validity_date: string;
-  subject: string;
-  notes?: string;
-  lines: QuoteLinePayload[];
-}
-
-export interface QuoteLinePayload {
-  order: number;
-  label: string;
+export interface QuoteLineInput {
+  ordre?: number;
+  libelle: string;
   description?: string;
-  quantity: number;
-  unit: string;
-  unit_price_excl_tax: number;
-  vat_rate: number;
+  quantite: string;
+  unite?: string;
+  prix_unitaire_ht: string;
+  taux_tva: string;
+}
+
+export interface QuoteInput {
+  client_id: number;
+  date_emission?: string;
+  date_validite?: string;
+  objet?: string;
+  notes?: string;
+  lignes: QuoteLineInput[];
 }
