@@ -7,7 +7,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const baseClasses = `
-  inline-flex items-center justify-start gap-[5px]
+  inline-flex items-center gap-[5px]
   px-[15px] py-[8px]
   rounded-md
   transition-colors
