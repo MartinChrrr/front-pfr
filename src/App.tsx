@@ -7,18 +7,32 @@ import Clients from './pages/Clients'
 import DevisDetails from './pages/DevisDetails'
 import FactureDetails from './pages/FactureDetails'
 import ClientDetails from './pages/ClientDetails'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ProtectedRoute from './components/ProtectedRoute'
+import GuestRoute from './components/GuestRoute'
+import { AuthProvider } from './hooks/useAuth'
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Dashboard />} />
-      <Route path="/devis" element={<Quotes />} />
-      <Route path="/devis/:id" element={<DevisDetails />} />
-      <Route path="/factures" element={<Invoices />} />
-      <Route path="/factures/:id" element={<FactureDetails />} />
-      <Route path="/clients" element={<Clients />} />
-      <Route path="/clients/:id" element={<ClientDetails />} />
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        <Route element={<GuestRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/devis" element={<Quotes />} />
+          <Route path="/devis/:id" element={<DevisDetails />} />
+          <Route path="/factures" element={<Invoices />} />
+          <Route path="/factures/:id" element={<FactureDetails />} />
+          <Route path="/clients" element={<Clients />} />
+          <Route path="/clients/:id" element={<ClientDetails />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   )
 }
 

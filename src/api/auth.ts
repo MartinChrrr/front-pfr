@@ -1,29 +1,61 @@
-import api from './axios';
-import type { LoginRequest, RegisterRequest, User, UserSettings } from '../types/auth';
+import api, { setTokens, clearTokens, getRefreshToken } from "./api";
+import type {
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  User,
+  UserConfiguration,
+  ProfileUpdateRequest,
+  ConfigurationUpdateRequest,
+} from "../types/auth";
 
-export const authApi = {
-  // Login → Django sets HttpOnly cookies in the response
-  login: (data: LoginRequest) =>
-    api.post<{ user: User }>('/auth/login/', data).then((res) => res.data),
+export async function login(data: LoginRequest): Promise<AuthResponse> {
+  const response = await api.post("/auth/login/", data);
+  const authData: AuthResponse = response.data.data;
+  setTokens(authData.access, authData.refresh);
+  return authData;
+}
 
-  // Register → Django sets HttpOnly cookies in the response
-  register: (data: RegisterRequest) =>
-    api.post<{ user: User }>('/auth/register/', data).then((res) => res.data),
+export async function register(data: RegisterRequest): Promise<User> {
+  const response = await api.post("/auth/register/", data);
+  return response.data.data;
+}
 
-  // Logout → Django clears the HttpOnly cookies
-  logout: () =>
-    api.post('/auth/logout/'),
+export async function logout(): Promise<void> {
+  const refresh = getRefreshToken();
+  await api.post("/auth/logout/", { refresh });
+  clearTokens();
+}
 
-  // Check current session (cookies are sent automatically)
-  getMe: () =>
-    api.get<User>('/auth/me/').then((res) => res.data),
+export async function refreshToken(): Promise<{ access: string; refresh: string }> {
+  const refresh = getRefreshToken();
+  const response = await api.post("/auth/token/refresh/", { refresh });
+  const tokens = response.data.data;
+  setTokens(tokens.access, tokens.refresh);
+  return tokens;
+}
 
-  updateMe: (data: Partial<User>) =>
-    api.patch<User>('/auth/me/', data).then((res) => res.data),
+export async function getCurrentUser(): Promise<{ user: User; configuration: UserConfiguration }> {
+  const response = await api.get("/auth/me/");
+  return response.data.data;
+}
 
-  getSettings: () =>
-    api.get<UserSettings>('/auth/settings/').then((res) => res.data),
+export async function getProfile(): Promise<User> {
+  const response = await api.get("/auth/profile/");
+  return response.data.data;
+}
 
-  updateSettings: (data: Partial<UserSettings>) =>
-    api.patch<UserSettings>('/auth/settings/', data).then((res) => res.data),
-};
+export async function updateProfile(data: ProfileUpdateRequest): Promise<User> {
+  const response = await api.patch("/auth/profile/", data);
+  return response.data.data;
+}
+
+export async function getConfiguration(): Promise<UserConfiguration> {
+  const response = await api.get("/auth/configuration/");
+  return response.data.data;
+}
+
+export async function updateConfiguration(data: ConfigurationUpdateRequest): Promise<UserConfiguration> {
+  const response = await api.patch("/auth/configuration/", data);
+  return response.data.data;
+}
