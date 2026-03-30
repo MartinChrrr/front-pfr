@@ -15,7 +15,7 @@ const headers = ["Nom", "Entreprise", "Email", "Téléphone"] as const;
 
 export default function ClientsTable({ rows, menuItems }: ClientsTableProps) {
   return (
-    <div className="w-full rounded-lg border border-black overflow-hidden divide-y divide-black">
+    <div className="w-full rounded-lg border border-black overflow-visible divide-y divide-black">
       <div className={`grid ${gridCols} items-center px-[30px] py-5`}>
         {headers.map((label) => (
           <span key={label} className="text-caption font-medium text-text-black">

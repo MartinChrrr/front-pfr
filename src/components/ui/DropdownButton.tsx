@@ -17,7 +17,9 @@ export default function DropdownButton({
   iconSize = 16,
 }: DropdownButtonProps) {
   const [open, setOpen] = useState(false);
+  const [dropUp, setDropUp] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -30,21 +32,29 @@ export default function DropdownButton({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
+  const handleToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!open && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      setDropUp(spaceBelow < 200);
+    }
+    setOpen((prev) => !prev);
+  };
+
   return (
     <div ref={ref} className="relative">
       <button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setOpen((prev) => !prev);
-        }}
+        ref={buttonRef}
+        onClick={handleToggle}
         className="flex items-center justify-center w-6 h-6 rounded hover:bg-black/5 transition-colors cursor-pointer"
       >
         <EllipsisVertical size={iconSize} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 z-50 min-w-[180px] bg-white rounded-lg shadow-lg py-1">
+        <div className={`absolute right-0 z-50 min-w-[180px] bg-white rounded-lg shadow-lg py-1 ${dropUp ? "bottom-full mb-1" : "top-full mt-1"}`}>
           {items.map((item) => (
             <button
               key={item.label}
