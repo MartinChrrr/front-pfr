@@ -25,7 +25,7 @@ export default function RegisterForm() {
     setGlobalError(null);
     try {
       await apiRegister(data);
-      navigate("/login");
+      navigate("/onboarding");
     } catch (error) {
       const message = handleFormErrors<RegisterRequest>(error, setError);
       if (message) setGlobalError(message);
