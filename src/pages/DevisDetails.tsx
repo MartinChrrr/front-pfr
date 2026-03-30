@@ -14,7 +14,7 @@ export default function DevisDetails() {
   return (
     <DetailsLayout
       header={{
-        title: quote.number,
+        title: quote.numero,
         buttonPrimary: { title: "Transformer en facture", icon: FileText },
         buttonSecondary: { title: "Modifier", icon: SquarePen },
       }}

@@ -23,7 +23,7 @@ export default function ClientDetails() {
   return (
     <DetailsLayout
       header={{
-        title: client ? client.company_name : "Client",
+        title: client ? client.raison_sociale : "Client",
         buttonPrimary: { title: "Créer une facture", icon: SquarePen },
         buttonSecondary: { title: "Créer un devis", icon: SquarePen },
       }}
@@ -39,9 +39,9 @@ export default function ClientDetails() {
               {fakeFactures.map(facture => (
                 <BillingRowClientCard 
                   key={facture.id} 
-                  name={facture.number} 
-                  status={facture.status} 
-                  total={facture.total_vat}
+                  name={facture.numero} 
+                  status={facture.statut} 
+                  total={Number(facture.total_ttc)}
                   date= {new Date(facture.created_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}
                   />))}
             </Card>
@@ -49,9 +49,9 @@ export default function ClientDetails() {
               {fakeDevis.map(devis => (
                 <BillingRowClientCard 
                   key={devis.id} 
-                  name={devis.number} 
-                  status={devis.status} 
-                  total={devis.total_vat}
+                  name={devis.numero} 
+                  status={devis.statut} 
+                  total={Number(devis.total_ttc)}
                   date= {new Date(devis.created_at).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" })}
                   />))} 
             </Card>
