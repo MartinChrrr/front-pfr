@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef, useCallback } from "react";
 import { X } from "lucide-react";
 import Button from "./Button";
 
@@ -12,6 +12,9 @@ type ModalProps = {
   cancelLabel?: string;
 };
 
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export default function Modal({
   title,
   children,
@@ -21,6 +24,53 @@ export default function Modal({
   confirmLabel = "Enregistrer les modifications",
   cancelLabel = "Annuler",
 }: ModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+
+      if (e.key !== "Tab" || !modalRef.current) return;
+
+      const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      if (focusableElements.length === 0) return;
+
+      const first = focusableElements[0];
+      const last = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const firstFocusable = modalRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+    firstFocusable?.focus();
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previouslyFocused?.focus();
+    };
+  }, [isOpen, handleKeyDown]);
+
   if (!isOpen) return null;
 
   return (
@@ -33,7 +83,7 @@ export default function Modal({
 
       {/* Modal container */}
       <div className="relative z-10 flex min-h-screen items-center justify-center p-4 ">
-        <div className="w-full max-w-4xl rounded-lg bg-bg-primary shadow-xl">
+        <div ref={modalRef} role="dialog" aria-modal="true" className="w-full max-w-4xl rounded-lg bg-bg-primary shadow-xl">
           
           {/* Header */}
           <div className="flex items-center justify-between border-b border-text-placeholder px-6 py-4">
