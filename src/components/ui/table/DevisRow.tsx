@@ -16,7 +16,7 @@ export interface DevisRowData {
 interface DevisRowProps {
   row: DevisRowData;
   gridCols: string;
-  menuItems?: (id: number) => DropdownItem[];
+  menuItems?: (row: DevisRowData) => DropdownItem[];
 }
 
 export default function DevisRow({ row, gridCols, menuItems }: DevisRowProps) {
@@ -31,7 +31,7 @@ export default function DevisRow({ row, gridCols, menuItems }: DevisRowProps) {
       <span className="text-caption font-medium">{row.echeance}</span>
       <StatusBadge status={row.status} />
       <span className="text-caption font-medium">{row.ttc.toFixed(2)} €</span>
-      {menuItems && <DropdownButton items={menuItems(row.id)} />}
+      {menuItems && <DropdownButton items={menuItems(row)} />}
     </NavLink>
   );
 }

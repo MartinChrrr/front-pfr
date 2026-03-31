@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { SquarePen, Trash2, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Eye, SquarePen, Trash2, Download, Plus } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import FacturesTable from "../components/ui/table/FacturesTable";
 import SearchBar from "../components/ui/SearchBar";
@@ -7,15 +8,21 @@ import Button from "../components/ui/Button";
 import Modal from "../components/ui/Modal";
 import EditInvoiceForm from "../components/forms/EditInvoiceForm";
 import type { EditInvoiceFormData } from "../components/forms/EditInvoiceForm";
-import { createInvoice } from "../api/invoices";
+import ChangeInvoiceStatusForm from "../components/forms/ChangeInvoiceStatusForm";
+import { createInvoice, deleteInvoice, changeInvoiceStatus, downloadInvoicePdf } from "../api/invoices";
 import { useInvoices } from "../hooks/useInvoices";
 import { useClients } from "../hooks/useClients";
+import type { InvoiceStatus } from "../types/invoice";
 
 const FORM_ID = "create-invoice-form";
+const STATUS_FORM_ID = "change-invoice-status-form";
 
 export default function Invoices() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<{ id: number; status: InvoiceStatus } | null>(null);
   const { invoiceRows, isLoading, error, refresh } = useInvoices({});
   const { clients } = useClients();
 
@@ -48,6 +55,23 @@ export default function Invoices() {
     form?.requestSubmit();
   };
 
+  const handleDelete = async (id: number) => {
+    await deleteInvoice(id);
+    refresh();
+  };
+
+  const handleStatusSubmit = async (statut: InvoiceStatus) => {
+    if (!selectedInvoice) return;
+    await changeInvoiceStatus(selectedInvoice.id, statut);
+    refresh();
+    setIsStatusModalOpen(false);
+  };
+
+  const handleStatusConfirm = () => {
+    const form = document.getElementById(STATUS_FORM_ID) as HTMLFormElement | null;
+    form?.requestSubmit();
+  };
+
   return (
     <MainLayout>
       <div className="flex items-center justify-between">
@@ -71,10 +95,17 @@ export default function Invoices() {
       ) : (
         <FacturesTable
           rows={filteredRows}
-          menuItems={(id) => [
-            { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier facture #${id}`) },
-            { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer facture #${id}`) },
-          ]}
+          menuItems={(row) => {
+            const items = [
+              { label: "Visualiser", icon: <Eye size={18} />, onClick: () => navigate(`/factures/${row.id}`) },
+              { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => { setSelectedInvoice({ id: row.id, status: row.status }); setIsStatusModalOpen(true); } },
+            ];
+            if (row.status === "BROUILLON") {
+              items.push({ label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => handleDelete(row.id) });
+            }
+            items.push({ label: "Télécharger", icon: <Download size={18} />, onClick: () => downloadInvoicePdf(row.id) });
+            return items;
+          }}
         />
       )}
 
@@ -90,6 +121,22 @@ export default function Invoices() {
           clients={clients}
           onSubmit={handleCreateSubmit}
         />
+      </Modal>
+
+      <Modal
+        title="Modifier le statut de la facture"
+        isOpen={isStatusModalOpen}
+        onClose={() => setIsStatusModalOpen(false)}
+        onConfirm={handleStatusConfirm}
+        confirmLabel="Confirmer"
+      >
+        {selectedInvoice && (
+          <ChangeInvoiceStatusForm
+            formId={STATUS_FORM_ID}
+            currentStatus={selectedInvoice.status}
+            onSubmit={handleStatusSubmit}
+          />
+        )}
       </Modal>
     </MainLayout>
   );

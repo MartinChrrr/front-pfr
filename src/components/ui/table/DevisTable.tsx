@@ -6,7 +6,7 @@ export type { DevisRowData as DevisRow };
 
 interface DevisTableProps {
   rows: DevisRowData[];
-  menuItems?: (id: number) => DropdownItem[];
+  menuItems?: (row: DevisRowData) => DropdownItem[];
 }
 
 const gridCols = "grid-cols-[0.6fr_1fr_1.5fr_1fr_1fr_0.8fr_40px]";

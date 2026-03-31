@@ -16,8 +16,6 @@ export default function DetailsLayout({ header, children }: DetailsLayoutProps) 
         logo={
           <span className="text-xl font-bold text-white">Logo</span>
         }
-        name="Paul Vigneron"
-        email="paul.vigneron@gmail.com"
         onLogout={() => alert("Déconnexion")}
       />
 

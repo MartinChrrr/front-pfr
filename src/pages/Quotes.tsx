@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { SquareX, SquarePen, Trash2, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Eye, SquarePen, Trash2, Download, Plus } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import DevisTable from "../components/ui/table/DevisTable";
 import SearchBar from "../components/ui/SearchBar";
@@ -7,15 +8,21 @@ import Button from "../components/ui/Button";
 import Modal from "../components/ui/Modal";
 import EditQuoteForm from "../components/forms/EditQuoteForm";
 import type { EditQuoteFormData } from "../components/forms/EditQuoteForm";
-import { createQuote } from "../api/quotes";
+import ChangeQuoteStatusForm from "../components/forms/ChangeQuoteStatusForm";
+import { createQuote, deleteQuote, changeQuoteStatus, downloadQuotePdf } from "../api/quotes";
 import { useQuotes } from "../hooks/useQuotes";
 import { useClients } from "../hooks/useClients";
+import type { QuoteStatus } from "../types/quote";
 
 const FORM_ID = "create-quote-form";
+const STATUS_FORM_ID = "change-quote-status-form";
 
 export default function Quotes() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [selectedQuote, setSelectedQuote] = useState<{ id: number; status: QuoteStatus } | null>(null);
   const { quoteRows, isLoading, error, refresh } = useQuotes({});
   const { clients } = useClients();
 
@@ -48,6 +55,23 @@ export default function Quotes() {
     form?.requestSubmit();
   };
 
+  const handleDelete = async (id: number) => {
+    await deleteQuote(id);
+    refresh();
+  };
+
+  const handleStatusSubmit = async (statut: QuoteStatus) => {
+    if (!selectedQuote) return;
+    await changeQuoteStatus(selectedQuote.id, statut);
+    refresh();
+    setIsStatusModalOpen(false);
+  };
+
+  const handleStatusConfirm = () => {
+    const form = document.getElementById(STATUS_FORM_ID) as HTMLFormElement | null;
+    form?.requestSubmit();
+  };
+
   return (
     <MainLayout>
       <div className="flex items-center justify-between">
@@ -71,11 +95,17 @@ export default function Quotes() {
       ) : (
         <DevisTable
           rows={filteredRows}
-          menuItems={(id) => [
-            { label: "Non Valider", icon: <SquareX size={18} />, onClick: () => alert(`Non valider devis #${id}`) },
-            { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier devis #${id}`) },
-            { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer devis #${id}`) },
-          ]}
+          menuItems={(row) => {
+            const items = [
+              { label: "Visualiser", icon: <Eye size={18} />, onClick: () => navigate(`/devis/${row.id}`) },
+              { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => { setSelectedQuote({ id: row.id, status: row.status }); setIsStatusModalOpen(true); } },
+            ];
+            if (row.status !== "ACCEPTE") {
+              items.push({ label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => handleDelete(row.id) });
+            }
+            items.push({ label: "Télécharger", icon: <Download size={18} />, onClick: () => downloadQuotePdf(row.id) });
+            return items;
+          }}
         />
       )}
 
@@ -91,6 +121,22 @@ export default function Quotes() {
           clients={clients}
           onSubmit={handleCreateSubmit}
         />
+      </Modal>
+
+      <Modal
+        title="Modifier le statut du devis"
+        isOpen={isStatusModalOpen}
+        onClose={() => setIsStatusModalOpen(false)}
+        onConfirm={handleStatusConfirm}
+        confirmLabel="Confirmer"
+      >
+        {selectedQuote && (
+          <ChangeQuoteStatusForm
+            formId={STATUS_FORM_ID}
+            currentStatus={selectedQuote.status}
+            onSubmit={handleStatusSubmit}
+          />
+        )}
       </Modal>
     </MainLayout>
   );

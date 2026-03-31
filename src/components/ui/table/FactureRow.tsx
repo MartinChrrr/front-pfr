@@ -16,7 +16,7 @@ export interface FactureRowData {
 interface FactureRowProps {
   row: FactureRowData;
   gridCols: string;
-  menuItems?: (id: number) => DropdownItem[];
+  menuItems?: (row: FactureRowData) => DropdownItem[];
 }
 
 export default function FactureRow({ row, gridCols, menuItems }: FactureRowProps) {
@@ -31,7 +31,7 @@ export default function FactureRow({ row, gridCols, menuItems }: FactureRowProps
       <span className="text-caption font-medium">{row.echeance}</span>
       <StatusBadge status={row.status} />
       <span className="text-caption font-medium">{row.ttc.toFixed(2)} €</span>
-      {menuItems && <DropdownButton items={menuItems(row.id)} />}
+      {menuItems && <DropdownButton items={menuItems(row)} />}
     </NavLink>
   );
 }

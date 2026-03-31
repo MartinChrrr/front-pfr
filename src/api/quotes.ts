@@ -38,3 +38,26 @@ export async function changeQuoteStatus(id: number, statut: QuoteStatus): Promis
   const response = await api.post(`/quotes/${id}/changer_statut/`, { statut });
   return response.data.data;
 }
+
+export async function downloadQuotePdf(id: number): Promise<void> {
+  const response = await api.get(`/quotes/${id}/pdf/`, {
+    responseType: "blob",
+  });
+
+  const blob = new Blob([response.data], { type: "application/pdf" });
+  const url = window.URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+
+  const contentDisposition = response.headers["content-disposition"];
+  const filename = contentDisposition
+    ? contentDisposition.split("filename=")[1]?.replace(/"/g, "")
+    : `devis-${id}.pdf`;
+
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(url);
+}
