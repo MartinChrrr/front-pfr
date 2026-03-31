@@ -1,4 +1,3 @@
-import type { ComponentProps } from "react";
 import type { LucideIcon } from "lucide-react";
 import { LogOut } from "lucide-react";
 import SidebarItem from "./SidebarItem";
@@ -26,15 +25,12 @@ type SidebarProps = {
   items: SidebarEntry[];
   logo?: React.ReactNode;
   onLogout?: () => void;
-} & ComponentProps<typeof SidebarProfile>;
+};
 
 export default function Sidebar({
   items,
   logo,
   onLogout,
-  name,
-  email,
-  avatarUrl,
 }: SidebarProps) {
   return (
     <aside className="flex h-full w-[268px] flex-col justify-between bg-primary-500 p-4">
@@ -64,7 +60,7 @@ export default function Sidebar({
       </div>
 
       <div className="flex flex-col gap-3">
-        <SidebarProfile name={name} email={email} avatarUrl={avatarUrl} />
+        <SidebarProfile />
 
         <button
           type="button"

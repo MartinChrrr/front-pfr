@@ -10,8 +10,6 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         logo={
           <span className="text-xl font-bold text-white">Logo</span>
         }
-        name="Paul Vigneron"
-        email="paul.vigneron@gmail.com"
         onLogout={() => alert("Déconnexion")}
       />
 
