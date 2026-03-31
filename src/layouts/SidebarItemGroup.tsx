@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -22,7 +22,13 @@ export default function SidebarItemGroup({
   subItems,
   defaultOpen = false,
 }: SidebarItemGroupProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const { pathname } = useLocation();
+  const hasActiveChild = subItems.some((item) => item.to && pathname.startsWith(item.to));
+  const [isOpen, setIsOpen] = useState(defaultOpen || hasActiveChild);
+
+  useEffect(() => {
+    if (hasActiveChild) setIsOpen(true);
+  }, [hasActiveChild]);
 
   return (
     <div className="flex flex-col gap-[10px]">
