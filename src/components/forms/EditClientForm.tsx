@@ -5,10 +5,14 @@ interface EditClientFormData {
   raison_sociale: string;
   email: string;
   telephone: string;
+  contact_nom: string;
+  contact_email: string;
+  contact_telephone: string;
   ligne1: string;
   code_postal: string;
   ville: string;
   siret: string;
+  notes: string;
 }
 
 type EditClientFormProps = {
@@ -31,10 +35,14 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
       raison_sociale: client.raison_sociale,
       email: client.email,
       telephone: client.telephone,
+      contact_nom: client.contact_nom,
+      contact_email: client.contact_email,
+      contact_telephone: client.contact_telephone,
       ligne1: address?.ligne1 ?? "",
       code_postal: address?.code_postal ?? "",
       ville: address?.ville ?? "",
       siret: client.siret,
+      notes: client.notes,
     },
   });
 
@@ -84,6 +92,41 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           {errors.telephone && (
             <p className="mt-1 text-xs text-alert">{errors.telephone.message}</p>
           )}
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-[10px]">
+        <label className="font-medium">
+          Nom du contact
+        </label>
+        <input
+          type="text"
+          {...register("contact_nom")}
+          className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
+        />
+      </div>
+
+      <div className="flex gap-5">
+        <div className="flex flex-1 flex-col gap-[10px]">
+          <label className="font-medium">
+            Email du contact
+          </label>
+          <input
+            type="email"
+            {...register("contact_email")}
+            className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
+          />
+        </div>
+
+        <div className="flex flex-1 flex-col gap-[10px]">
+          <label className="font-medium">
+            Téléphone du contact
+          </label>
+          <input
+            type="tel"
+            {...register("contact_telephone")}
+            className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
+          />
         </div>
       </div>
 
@@ -143,6 +186,17 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         {errors.siret && (
           <p className="mt-1 text-xs text-alert">{errors.siret.message}</p>
         )}
+      </div>
+
+      <div className="flex flex-col gap-[10px]">
+        <label className="font-medium">
+          Notes
+        </label>
+        <textarea
+          {...register("notes")}
+          rows={3}
+          className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300 resize-none"
+        />
       </div>
     </form>
   );

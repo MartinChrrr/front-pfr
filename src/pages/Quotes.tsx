@@ -8,17 +8,20 @@ import Modal from "../components/ui/Modal";
 import EditQuoteForm from "../components/forms/EditQuoteForm";
 import type { EditQuoteFormData } from "../components/forms/EditQuoteForm";
 import { createQuote } from "../api/quotes";
-import { sampleDevisRows, fakeClient } from "../.temp/MockedData";
+import { useQuotes } from "../hooks/useQuotes";
+import { useClients } from "../hooks/useClients";
 
 const FORM_ID = "create-quote-form";
 
 export default function Quotes() {
   const [search, setSearch] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { quoteRows, isLoading, error, refresh } = useQuotes({});
+  const { clients } = useClients();
 
-  const filteredRows = sampleDevisRows.filter((row) =>
+  const filteredRows = quoteRows.filter((row) =>
     [row.number, row.client]
-      .some((field) => field.toLowerCase().includes(search.toLowerCase()))
+      .some((field) => field?.toLowerCase().includes(search.toLowerCase()))
   );
 
   const handleCreateSubmit = async (data: EditQuoteFormData) => {
@@ -36,6 +39,7 @@ export default function Quotes() {
       })),
     });
 
+    refresh();
     setIsCreateModalOpen(false);
   };
 
@@ -60,14 +64,20 @@ export default function Quotes() {
         placeholder="Rechercher un devis"
       />
 
-      <DevisTable
-        rows={filteredRows}
-        menuItems={(id) => [
-          { label: "Non Valider", icon: <SquareX size={18} />, onClick: () => alert(`Non valider devis #${id}`) },
-          { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier devis #${id}`) },
-          { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer devis #${id}`) },
-        ]}
-      />
+      {isLoading ? (
+        <p className="text-text-placeholder py-10 text-center">Chargement...</p>
+      ) : error ? (
+        <p className="text-alert py-10 text-center">{error}</p>
+      ) : (
+        <DevisTable
+          rows={filteredRows}
+          menuItems={(id) => [
+            { label: "Non Valider", icon: <SquareX size={18} />, onClick: () => alert(`Non valider devis #${id}`) },
+            { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier devis #${id}`) },
+            { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer devis #${id}`) },
+          ]}
+        />
+      )}
 
       <Modal
         title="Créer un devis"
@@ -78,7 +88,7 @@ export default function Quotes() {
       >
         <EditQuoteForm
           formId={FORM_ID}
-          clients={[fakeClient]}
+          clients={clients}
           onSubmit={handleCreateSubmit}
         />
       </Modal>

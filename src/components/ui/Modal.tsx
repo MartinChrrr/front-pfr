@@ -83,10 +83,10 @@ export default function Modal({
 
       {/* Modal container */}
       <div className="relative z-10 flex min-h-screen items-center justify-center p-4 ">
-        <div ref={modalRef} role="dialog" aria-modal="true" className="w-full max-w-4xl rounded-lg bg-bg-primary shadow-xl">
-          
+        <div ref={modalRef} role="dialog" aria-modal="true" className="flex max-h-[90vh] w-full max-w-4xl flex-col rounded-lg bg-bg-primary shadow-xl">
+
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-text-placeholder px-6 py-4">
+          <div className="flex shrink-0 items-center justify-between border-b border-text-placeholder px-6 py-4">
             <h2 className="text-lg font-semibold">
               {title}
             </h2>
@@ -101,12 +101,12 @@ export default function Modal({
           </div>
 
           {/* Body */}
-          <div className="px-6 py-4 flex flex-col gap-5">
+          <div className="overflow-y-auto px-6 py-4 flex flex-col gap-5">
             {children}
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-end gap-3 px-6 py-4">
+          <div className="flex shrink-0 items-center justify-end gap-3 border-t border-text-placeholder px-6 py-4">
             <Button variant="outline" onClick={onClose}>
               {cancelLabel}
             </Button>

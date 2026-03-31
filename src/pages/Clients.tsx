@@ -8,7 +8,7 @@ import Modal from "../components/ui/Modal";
 import EditClientForm from "../components/forms/EditClientForm";
 import type { EditClientFormData } from "../components/forms/EditClientForm";
 import { createClient } from "../api/clients";
-import { sampleClientRows } from "../.temp/MockedData";
+import { useClients } from "../hooks/useClients";
 
 const FORM_ID = "create-client-form";
 
@@ -30,28 +30,34 @@ const emptyClient = {
 export default function Clients() {
   const [search, setSearch] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { clientRows, isLoading, error, refresh } = useClients();
 
-  const filteredRows = sampleClientRows.filter((row) =>
+  const filteredRows = clientRows.filter((row) =>
     [row.company_name, row.contact_name, row.email]
-      .some((field) => field.toLowerCase().includes(search.toLowerCase()))
+      .some((field) => field?.toLowerCase().includes(search.toLowerCase()))
   );
 
   const handleCreateSubmit = async (data: EditClientFormData) => {
     const { ligne1, code_postal, ville, ...clientFields } = data;
 
-    await createClient({
-      ...clientFields,
-      adresses: [
-        {
-          type: "SIEGE",
-          ligne1,
-          code_postal,
-          ville,
-        },
-      ],
-    });
+    try {
+      await createClient({
+        ...clientFields,
+        adresses: [
+          {
+            type: "SIEGE",
+            ligne1,
+            code_postal,
+            ville,
+          },
+        ],
+      });
 
-    setIsCreateModalOpen(false);
+      refresh();
+      setIsCreateModalOpen(false);
+    } catch (err) {
+      console.error("Erreur création client:", err);
+    }
   };
 
   const handleConfirm = () => {
@@ -75,13 +81,19 @@ export default function Clients() {
         placeholder="Rechercher un client"
       />
 
-      <ClientsTable
-        rows={filteredRows}
-        menuItems={(id) => [
-          { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier client #${id}`) },
-          { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer client #${id}`) },
-        ]}
-      />
+      {isLoading ? (
+        <p className="text-text-placeholder py-10 text-center">Chargement...</p>
+      ) : error ? (
+        <p className="text-alert py-10 text-center">{error}</p>
+      ) : (
+        <ClientsTable
+          rows={filteredRows}
+          menuItems={(id) => [
+            { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier client #${id}`) },
+            { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer client #${id}`) },
+          ]}
+        />
+      )}
 
       <Modal
         title="Créer un client"

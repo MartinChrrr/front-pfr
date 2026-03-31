@@ -8,17 +8,20 @@ import Modal from "../components/ui/Modal";
 import EditInvoiceForm from "../components/forms/EditInvoiceForm";
 import type { EditInvoiceFormData } from "../components/forms/EditInvoiceForm";
 import { createInvoice } from "../api/invoices";
-import { sampleFactureRows, fakeClient } from "../.temp/MockedData";
+import { useInvoices } from "../hooks/useInvoices";
+import { useClients } from "../hooks/useClients";
 
 const FORM_ID = "create-invoice-form";
 
 export default function Invoices() {
   const [search, setSearch] = useState("");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { invoiceRows, isLoading, error, refresh } = useInvoices({});
+  const { clients } = useClients();
 
-  const filteredRows = sampleFactureRows.filter((row) =>
+  const filteredRows = invoiceRows.filter((row) =>
     [row.number, row.client]
-      .some((field) => field.toLowerCase().includes(search.toLowerCase()))
+      .some((field) => field?.toLowerCase().includes(search.toLowerCase()))
   );
 
   const handleCreateSubmit = async (data: EditInvoiceFormData) => {
@@ -36,6 +39,7 @@ export default function Invoices() {
       })),
     });
 
+    refresh();
     setIsCreateModalOpen(false);
   };
 
@@ -60,13 +64,19 @@ export default function Invoices() {
         placeholder="Rechercher une facture"
       />
 
-      <FacturesTable
-        rows={filteredRows}
-        menuItems={(id) => [
-          { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier facture #${id}`) },
-          { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer facture #${id}`) },
-        ]}
-      />
+      {isLoading ? (
+        <p className="text-text-placeholder py-10 text-center">Chargement...</p>
+      ) : error ? (
+        <p className="text-alert py-10 text-center">{error}</p>
+      ) : (
+        <FacturesTable
+          rows={filteredRows}
+          menuItems={(id) => [
+            { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier facture #${id}`) },
+            { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer facture #${id}`) },
+          ]}
+        />
+      )}
 
       <Modal
         title="Créer une facture"
@@ -77,7 +87,7 @@ export default function Invoices() {
       >
         <EditInvoiceForm
           formId={FORM_ID}
-          clients={[fakeClient]}
+          clients={clients}
           onSubmit={handleCreateSubmit}
         />
       </Modal>

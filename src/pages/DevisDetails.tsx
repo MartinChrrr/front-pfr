@@ -1,23 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { fakeDevis, fakeClient } from "../.temp/MockedData";
 import LittleClientsCard from "../components/Quotes/LittleClientsCard";
 import QuotesDetailsCard from "../components/Quotes/QuotesDetailsCard";
 import DetailsLayout from "../layouts/DetailsLayout";
 import Modal from "../components/ui/Modal";
 import EditQuoteForm from "../components/forms/EditQuoteForm";
 import type { EditQuoteFormData } from "../components/forms/EditQuoteForm";
-import { updateQuote } from "../api/quotes";
+import { getQuote, updateQuote } from "../api/quotes";
+import { createInvoiceFromQuote } from "../api/invoices";
+import { useClients } from "../hooks/useClients";
+import type { Quote } from "../types/quote";
 import { SquarePen, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const FORM_ID = "edit-quote-form";
 
 export default function DevisDetails() {
   const { id } = useParams();
-  const [quote, setQuote] = useState(() => fakeDevis.find((d) => d.id === Number(id)));
+  const [quote, setQuote] = useState<Quote | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { clients } = useClients();
+  const navigate = useNavigate();
 
-  if (!quote) return <p>Devis introuvable</p>;
+  const handleTransformToInvoice = async () => {
+    if (!quote) return;
+    const invoice = await createInvoiceFromQuote(quote.id);
+    navigate(`/factures/${invoice.id}`);
+  };
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    setIsLoading(true);
+
+    getQuote(Number(id))
+      .then((data) => {
+        if (!cancelled) {
+          setQuote(data);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setQuote(null);
+          setIsLoading(false);
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <DetailsLayout header={{ title: "Devis", buttonPrimary: { title: "Transformer en facture", icon: FileText } }}>
+        <p className="text-text-placeholder py-10 text-center">Chargement...</p>
+      </DetailsLayout>
+    );
+  }
+
+  if (!quote) return <p className="text-text-placeholder py-10 text-center">Devis introuvable</p>;
 
   const handleEditSubmit = async (data: EditQuoteFormData) => {
     const updated = await updateQuote(quote.id, {
@@ -47,7 +89,7 @@ export default function DevisDetails() {
     <DetailsLayout
       header={{
         title: quote.numero,
-        buttonPrimary: { title: "Transformer en facture", icon: FileText },
+        buttonPrimary: { title: "Transformer en facture", icon: FileText, onClick: handleTransformToInvoice },
         buttonSecondary: { title: "Modifier", icon: SquarePen, onClick: () => setIsEditModalOpen(true) },
       }}
     >
@@ -65,7 +107,7 @@ export default function DevisDetails() {
       >
         <EditQuoteForm
           formId={FORM_ID}
-          clients={[fakeClient]}
+          clients={clients}
           defaultValues={{
             client_id: String(quote.client.id),
             date_emission: quote.date_emission,
