@@ -37,7 +37,16 @@ export async function refreshToken(): Promise<{ access: string; refresh: string 
 
 export async function getCurrentUser(): Promise<{ user: User; configuration: UserConfiguration }> {
   const response = await api.get("/auth/me/");
-  return response.data.data;
+  const data = response.data.data;
+
+  // If the API nests under { user, configuration }, use as-is
+  if (data.user) {
+    return data;
+  }
+
+  // Otherwise, the user fields are at root level — separate them
+  const { configuration, ...user } = data;
+  return { user: user as User, configuration };
 }
 
 export async function getProfile(): Promise<User> {
