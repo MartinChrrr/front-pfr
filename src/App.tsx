@@ -10,6 +10,7 @@ import ClientDetails from './pages/ClientDetails'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Onboarding from './pages/Onboarding'
+import OnboardingConfiguration from './pages/OnboardingConfiguration'
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestRoute from './components/GuestRoute'
 import { AuthProvider } from './hooks/useAuth'
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/user-configuration" element={<OnboardingConfiguration />} />
         </Route>
 
         <Route element={<ProtectedRoute />}>
