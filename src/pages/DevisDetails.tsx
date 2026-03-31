@@ -6,20 +6,23 @@ import DetailsLayout from "../layouts/DetailsLayout";
 import Modal from "../components/ui/Modal";
 import EditQuoteForm from "../components/forms/EditQuoteForm";
 import type { EditQuoteFormData } from "../components/forms/EditQuoteForm";
-import { getQuote, updateQuote } from "../api/quotes";
+import { getQuote, updateQuote, changeQuoteStatus } from "../api/quotes";
 import { createInvoiceFromQuote } from "../api/invoices";
 import { useClients } from "../hooks/useClients";
-import type { Quote } from "../types/quote";
-import { SquarePen, FileText } from "lucide-react";
+import ChangeQuoteStatusForm from "../components/forms/ChangeQuoteStatusForm";
+import type { Quote, QuoteStatus } from "../types/quote";
+import { SquarePen, FileText, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const FORM_ID = "edit-quote-form";
+const STATUS_FORM_ID = "change-quote-status-form";
 
 export default function DevisDetails() {
   const { id } = useParams();
   const [quote, setQuote] = useState<Quote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const { clients } = useClients();
   const navigate = useNavigate();
 
@@ -85,12 +88,24 @@ export default function DevisDetails() {
     form?.requestSubmit();
   };
 
+  const handleStatusSubmit = async (statut: QuoteStatus) => {
+    const updated = await changeQuoteStatus(quote.id, statut);
+    setQuote(updated);
+    setIsStatusModalOpen(false);
+  };
+
+  const handleStatusConfirm = () => {
+    const form = document.getElementById(STATUS_FORM_ID) as HTMLFormElement | null;
+    form?.requestSubmit();
+  };
+
   return (
     <DetailsLayout
       header={{
         title: quote.numero,
         buttonPrimary: { title: "Transformer en facture", icon: FileText, onClick: handleTransformToInvoice },
         buttonSecondary: { title: "Modifier", icon: SquarePen, onClick: () => setIsEditModalOpen(true) },
+        buttonTertiary: { title: "Changer le statut", icon: RefreshCw, onClick: () => setIsStatusModalOpen(true) },
       }}
     >
       <div className="flex flex-row-reverse gap-5 py-20 px-10 w-full">
@@ -121,6 +136,20 @@ export default function DevisDetails() {
             })),
           }}
           onSubmit={handleEditSubmit}
+        />
+      </Modal>
+
+      <Modal
+        title="Changer le statut"
+        isOpen={isStatusModalOpen}
+        onClose={() => setIsStatusModalOpen(false)}
+        onConfirm={handleStatusConfirm}
+        confirmLabel="Confirmer"
+      >
+        <ChangeQuoteStatusForm
+          formId={STATUS_FORM_ID}
+          currentStatus={quote.statut}
+          onSubmit={handleStatusSubmit}
         />
       </Modal>
     </DetailsLayout>

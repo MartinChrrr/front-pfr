@@ -27,6 +27,7 @@ export default function DetailsLayout({ header, children }: DetailsLayoutProps) 
             title={header.title}
             buttonPrimary={header.buttonPrimary}
             buttonSecondary={header.buttonSecondary}
+            buttonTertiary={header.buttonTertiary}
           />
         )}
 
