@@ -48,13 +48,15 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
 
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+
+    {/* ### Enterprise name ### */}
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
-          Nom du client <span className="text-alert">*</span>
+          Raison sociale <span className="text-alert">*</span>
         </label>
         <input
           type="text"
-          {...register("raison_sociale", { required: "Nom du client requis" })}
+          {...register("raison_sociale", { required: "Raison sociale requise" })}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
         />
         {errors.raison_sociale && (
@@ -62,6 +64,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         )}
       </div>
 
+    {/* ### Email ### */}
       <div className="flex gap-5">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
@@ -80,13 +83,13 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           )}
         </div>
 
+    {/* ### Phone number ### */}
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Téléphone <span className="text-alert">*</span>
           </label>
           <input
             type="tel"
-            {...register("telephone", { required: "Téléphone requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
           {errors.telephone && (
@@ -95,9 +98,10 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         </div>
       </div>
 
+      {/* ### Contact's name and first name ### */}
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
-          Nom du contact
+          Nom et prénom du contact
         </label>
         <input
           type="text"
@@ -106,6 +110,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         />
       </div>
 
+    {/* ### Contact's email ### */}
       <div className="flex gap-5">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
@@ -118,6 +123,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           />
         </div>
 
+    {/* ### Contact's phone number ### */}
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Téléphone du contact
@@ -130,6 +136,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         </div>
       </div>
 
+    {/* ### Address ### */}
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
           Adresse <span className="text-alert">*</span>
@@ -144,6 +151,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         )}
       </div>
 
+    {/* ### Postal code ### */}
       <div className="flex gap-5">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
@@ -159,6 +167,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           )}
         </div>
 
+    {/* ### City ### */}
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Ville <span className="text-alert">*</span>
@@ -174,6 +183,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         </div>
       </div>
 
+     {/* ### SIRET number ### */}
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
           SIRET <span className="text-alert">*</span>
@@ -188,6 +198,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         )}
       </div>
 
+    {/* ### Notes ### */}
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
           Notes
