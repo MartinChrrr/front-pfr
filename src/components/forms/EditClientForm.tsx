@@ -140,7 +140,10 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           </label>
           <input
             type="tel"
-            {...register("contact_telephone")}
+            {...register("contact_telephone",
+            {pattern: { value: /^[0-9\s\+\-\.]{10,15}$/, 
+            message: "Téléphone invalide" }
+            })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
         </div>
@@ -153,7 +156,10 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         </label>
         <input
           type="text"
-          {...register("ligne1", { required: "Adresse requise" })}
+          {...register("ligne1", { required: "Adresse requise",
+          maxLength: { value: 200, 
+          message: "Maximum 200 caractères" }
+          })}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
         />
         {errors.ligne1 && (
@@ -188,7 +194,10 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           </label>
           <input
             type="text"
-            {...register("ville", { required: "Ville requise" })}
+            {...register("ville", { required: "Ville requise", 
+            pattern: { value: /^[a-zA-ZÀ-ÿ\s\-]+$/, 
+            message: "Ville invalide" }
+            })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
           {errors.ville && (
@@ -222,7 +231,9 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           Notes
         </label>
         <textarea
-          {...register("notes")}
+          {...register("notes",{
+          maxLength: { value: 500, message: "Maximum 500 caractères" }
+          })}
           rows={3}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300 resize-none"
         />
