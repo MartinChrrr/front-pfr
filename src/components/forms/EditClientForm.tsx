@@ -56,7 +56,11 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         </label>
         <input
           type="text"
-          {...register("raison_sociale", { required: "Raison sociale requise" })}
+          {...register("raison_sociale", { 
+          required: "Raison sociale requise", 
+          maxLength: { value: 200, 
+          message: "Maximum 200 caractères" }
+          })}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
         />
         {errors.raison_sociale && (
@@ -90,6 +94,12 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           </label>
           <input
             type="tel"
+            {...register("telephone", { 
+              required: "Téléphone requis",
+              pattern: { value: /^[0-9\s\+\-\.]{10,15}$/, 
+              message: "Téléphone invalide" }
+              })}
+            
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
           {errors.telephone && (
@@ -159,7 +169,11 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           </label>
           <input
             type="text"
-            {...register("code_postal", { required: "Code postal requis" })}
+            {...register("code_postal", { 
+            required: "Code postal requis", 
+            pattern: { value: /^\d{5}$/, 
+            message: "Code postal invalide (5 chiffres)" }
+            })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
           {errors.code_postal && (
@@ -190,7 +204,11 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         </label>
         <input
           type="text"
-          {...register("siret", { required: "SIRET requis" })}
+          {...register("siret", { 
+          required: "SIRET requis",
+          pattern: { value: /^\d{14}$/, 
+          message: "SIRET invalide (14 chiffres)" }
+          })}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
         />
         {errors.siret && (
