@@ -11,6 +11,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Onboarding from './pages/Onboarding'
 import OnboardingConfiguration from './pages/OnboardingConfiguration'
+import Settings from './pages/Settings'
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestRoute from './components/GuestRoute'
 import { AuthProvider } from './hooks/useAuth'
@@ -34,6 +35,7 @@ function App() {
           <Route path="/factures/:id" element={<FactureDetails />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/clients/:id" element={<ClientDetails />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
     </AuthProvider>
