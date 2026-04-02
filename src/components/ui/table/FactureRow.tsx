@@ -23,7 +23,7 @@ export default function FactureRow({ row, gridCols, menuItems }: FactureRowProps
   return (
     <NavLink
       to={`/factures/${row.id}`}
-      className={`grid ${gridCols} items-center px-[30px] py-5 hover:bg-table-2 transition-colors`}
+      className={`grid ${gridCols} items-center px-[30px] py-5 hover:bg-table-2 transition-colors last:rounded-b-lg`}
     >
       <span className="text-caption font-medium">{row.number}</span>
       <span className="text-caption font-medium">{row.date}</span>
