@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SquarePen, Trash2, Plus } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import ClientsTable from "../components/ui/table/ClientsTable";
 import SearchBar from "../components/ui/SearchBar";
+import Pagination from "../components/ui/Pagination";
 import Button from "../components/ui/Button";
 import Modal from "../components/ui/Modal";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import EditClientForm from "../components/forms/EditClientForm";
 import type { EditClientFormData } from "../components/forms/EditClientForm";
 import { createClient } from "../api/clients";
@@ -27,15 +29,18 @@ const emptyClient = {
   updated_at: "",
 };
 
+const PAGE_SIZE = 20;
+
 export default function Clients() {
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const { clientRows, isLoading, error, refresh } = useClients();
+  const debouncedSearch = useDebouncedValue(search);
+  const { clientRows, count, isLoading, error, refresh } = useClients({ search: debouncedSearch || undefined, page });
 
-  const filteredRows = clientRows.filter((row) =>
-    [row.company_name, row.contact_name, row.email]
-      .some((field) => field?.toLowerCase().includes(search.toLowerCase()))
-  );
+  const totalPages = Math.ceil(count / PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [debouncedSearch]);
 
   const handleCreateSubmit = async (data: EditClientFormData) => {
     const { ligne1, code_postal, ville, ...clientFields } = data;
@@ -86,13 +91,16 @@ export default function Clients() {
       ) : error ? (
         <p className="text-alert py-10 text-center">{error}</p>
       ) : (
-        <ClientsTable
-          rows={filteredRows}
-          menuItems={(id) => [
-            { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier client #${id}`) },
-            { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer client #${id}`) },
-          ]}
-        />
+        <>
+          <ClientsTable
+            rows={clientRows}
+            menuItems={(id) => [
+              { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier client #${id}`) },
+              { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer client #${id}`) },
+            ]}
+          />
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+        </>
       )}
 
       <Modal

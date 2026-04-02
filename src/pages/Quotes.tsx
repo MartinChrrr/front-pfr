@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, SquarePen, Trash2, Download, Plus } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import DevisTable from "../components/ui/table/DevisTable";
 import SearchBar from "../components/ui/SearchBar";
+import Pagination from "../components/ui/Pagination";
 import Button from "../components/ui/Button";
 import Modal from "../components/ui/Modal";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
+
 import EditQuoteForm from "../components/forms/EditQuoteForm";
 import type { EditQuoteFormData } from "../components/forms/EditQuoteForm";
 import ChangeQuoteStatusForm from "../components/forms/ChangeQuoteStatusForm";
@@ -17,19 +20,22 @@ import type { QuoteStatus } from "../types/quote";
 const FORM_ID = "create-quote-form";
 const STATUS_FORM_ID = "change-quote-status-form";
 
+const PAGE_SIZE = 20;
+
 export default function Quotes() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [selectedQuote, setSelectedQuote] = useState<{ id: number; status: QuoteStatus } | null>(null);
-  const { quoteRows, isLoading, error, refresh } = useQuotes({});
+  const debouncedSearch = useDebouncedValue(search);
+  const { quoteRows, count, isLoading, error, refresh } = useQuotes({ search: debouncedSearch || undefined, page });
   const { clients } = useClients();
 
-  const filteredRows = quoteRows.filter((row) =>
-    [row.number, row.client]
-      .some((field) => field?.toLowerCase().includes(search.toLowerCase()))
-  );
+  const totalPages = Math.ceil(count / PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [debouncedSearch]);
 
   const handleCreateSubmit = async (data: EditQuoteFormData) => {
     await createQuote({
@@ -93,20 +99,23 @@ export default function Quotes() {
       ) : error ? (
         <p className="text-alert py-10 text-center">{error}</p>
       ) : (
-        <DevisTable
-          rows={filteredRows}
-          menuItems={(row) => {
-            const items = [
-              { label: "Visualiser", icon: <Eye size={18} />, onClick: () => navigate(`/devis/${row.id}`) },
-              { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => { setSelectedQuote({ id: row.id, status: row.status }); setIsStatusModalOpen(true); } },
-            ];
-            if (row.status !== "ACCEPTE") {
-              items.push({ label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => handleDelete(row.id) });
-            }
-            items.push({ label: "Télécharger", icon: <Download size={18} />, onClick: () => downloadQuotePdf(row.id) });
-            return items;
-          }}
-        />
+        <>
+          <DevisTable
+            rows={quoteRows}
+            menuItems={(row) => {
+              const items = [
+                { label: "Visualiser", icon: <Eye size={18} />, onClick: () => navigate(`/devis/${row.id}`) },
+                { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => { setSelectedQuote({ id: row.id, status: row.status }); setIsStatusModalOpen(true); } },
+              ];
+              if (row.status !== "ACCEPTE") {
+                items.push({ label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => handleDelete(row.id) });
+              }
+              items.push({ label: "Télécharger", icon: <Download size={18} />, onClick: () => downloadQuotePdf(row.id) });
+              return items;
+            }}
+          />
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+        </>
       )}
 
       <Modal

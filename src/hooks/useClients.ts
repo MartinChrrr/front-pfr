@@ -4,8 +4,15 @@ import { clientToRow } from "../utils/mappers";
 import type { Client } from "../types/client";
 import type { ClientRowData } from "../components/ui/table/ClientRow";
 
-export function useClients() {
+export interface ClientFilters {
+  search?: string;
+  ordering?: string;
+  page?: number;
+}
+
+export function useClients(filters?: ClientFilters) {
   const [clients, setClients] = useState<Client[]>([]);
+  const [count, setCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -17,10 +24,16 @@ export function useClients() {
     setIsLoading(true);
     setError(null);
 
-    getClients()
+    const params: Record<string, string | number> = {};
+    if (filters?.page) params.page = filters.page;
+    if (filters?.search) params.search = filters.search;
+    if (filters?.ordering) params.ordering = filters.ordering;
+
+    getClients(params)
       .then((res) => {
         if (!cancelled) {
           setClients(res.results);
+          setCount(res.count);
           setIsLoading(false);
         }
       })
@@ -32,9 +45,9 @@ export function useClients() {
       });
 
     return () => { cancelled = true; };
-  }, [refreshKey]);
+  }, [refreshKey, JSON.stringify(filters)]);
 
   const clientRows: ClientRowData[] = clients.map(clientToRow);
 
-  return { clients, clientRows, isLoading, error, refresh };
+  return { clients, clientRows, count, isLoading, error, refresh };
 }

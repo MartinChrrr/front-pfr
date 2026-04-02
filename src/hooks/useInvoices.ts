@@ -6,6 +6,7 @@ import type { FactureRowData } from "../components/ui/table/FactureRow";
 
 export function useInvoices(filters?: InvoiceFilters) {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [count, setCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -27,6 +28,7 @@ export function useInvoices(filters?: InvoiceFilters) {
       .then((res) => {
         if (!cancelled) {
           setInvoices(res.results);
+          setCount(res.count);
           setIsLoading(false);
         }
       })
@@ -42,5 +44,5 @@ export function useInvoices(filters?: InvoiceFilters) {
 
   const invoiceRows: FactureRowData[] = invoices.map(invoiceToRow);
 
-  return { invoices, invoiceRows, isLoading, error, refresh };
+  return { invoices, invoiceRows, count, isLoading, error, refresh };
 }

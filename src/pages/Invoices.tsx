@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, SquarePen, Trash2, Download, Plus } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import FacturesTable from "../components/ui/table/FacturesTable";
 import SearchBar from "../components/ui/SearchBar";
+import Pagination from "../components/ui/Pagination";
 import Button from "../components/ui/Button";
 import Modal from "../components/ui/Modal";
+import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import EditInvoiceForm from "../components/forms/EditInvoiceForm";
 import type { EditInvoiceFormData } from "../components/forms/EditInvoiceForm";
 import ChangeInvoiceStatusForm from "../components/forms/ChangeInvoiceStatusForm";
@@ -17,19 +19,22 @@ import type { InvoiceStatus } from "../types/invoice";
 const FORM_ID = "create-invoice-form";
 const STATUS_FORM_ID = "change-invoice-status-form";
 
+const PAGE_SIZE = 20;
+
 export default function Invoices() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<{ id: number; status: InvoiceStatus } | null>(null);
-  const { invoiceRows, isLoading, error, refresh } = useInvoices({});
+  const debouncedSearch = useDebouncedValue(search);
+  const { invoiceRows, count, isLoading, error, refresh } = useInvoices({ search: debouncedSearch || undefined, page });
   const { clients } = useClients();
 
-  const filteredRows = invoiceRows.filter((row) =>
-    [row.number, row.client]
-      .some((field) => field?.toLowerCase().includes(search.toLowerCase()))
-  );
+  const totalPages = Math.ceil(count / PAGE_SIZE);
+
+  useEffect(() => { setPage(1); }, [debouncedSearch]);
 
   const handleCreateSubmit = async (data: EditInvoiceFormData) => {
     await createInvoice({
@@ -93,20 +98,23 @@ export default function Invoices() {
       ) : error ? (
         <p className="text-alert py-10 text-center">{error}</p>
       ) : (
-        <FacturesTable
-          rows={filteredRows}
-          menuItems={(row) => {
-            const items = [
-              { label: "Visualiser", icon: <Eye size={18} />, onClick: () => navigate(`/factures/${row.id}`) },
-              { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => { setSelectedInvoice({ id: row.id, status: row.status }); setIsStatusModalOpen(true); } },
-            ];
-            if (row.status === "BROUILLON") {
-              items.push({ label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => handleDelete(row.id) });
-            }
-            items.push({ label: "Télécharger", icon: <Download size={18} />, onClick: () => downloadInvoicePdf(row.id) });
-            return items;
-          }}
-        />
+        <>
+          <FacturesTable
+            rows={invoiceRows}
+            menuItems={(row) => {
+              const items = [
+                { label: "Visualiser", icon: <Eye size={18} />, onClick: () => navigate(`/factures/${row.id}`) },
+                { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => { setSelectedInvoice({ id: row.id, status: row.status }); setIsStatusModalOpen(true); } },
+              ];
+              if (row.status === "BROUILLON") {
+                items.push({ label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => handleDelete(row.id) });
+              }
+              items.push({ label: "Télécharger", icon: <Download size={18} />, onClick: () => downloadInvoicePdf(row.id) });
+              return items;
+            }}
+          />
+          <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+        </>
       )}
 
       <Modal
