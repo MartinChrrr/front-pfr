@@ -18,7 +18,7 @@ export default function ProfileSettingsForm() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ProfileUpdateRequest>({
-    defaultValues: {
+    values: {
       first_name: user?.first_name ?? "",
       last_name: user?.last_name ?? "",
       address: user?.address ?? "",

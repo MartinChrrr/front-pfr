@@ -18,7 +18,7 @@ export default function ConfigurationSettingsForm() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ConfigurationUpdateRequest>({
-    defaultValues: {
+    values: {
       quote_prefix: configuration?.quote_prefix ?? "DEV",
       invoice_prefix: configuration?.invoice_prefix ?? "FAC",
       next_quote_number: configuration?.next_quote_number ?? 1,
