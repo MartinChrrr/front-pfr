@@ -21,7 +21,7 @@ export default function ClientRow({ row, gridCols, menuItems }: ClientRowProps) 
       to={`/clients/${row.id}`}
       className={`grid ${gridCols} items-center px-[30px] py-5 hover:bg-table-2 transition-colors last:rounded-b-lg`}
     >
-      <span className="text-caption font-medium truncate pr-4">{row.contact_name}</span>
+      <span className="text-caption font-medium truncate pr-4">{row.contact_name ? row.contact_name : "Non renseigné"}</span>
       <span className="text-caption font-medium truncate pr-4">{row.company_name}</span>
       <span className="text-caption font-medium truncate pr-4">{row.email}</span>
       <span className="text-caption font-medium">{row.phone}</span>
