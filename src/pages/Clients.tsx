@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { SquarePen, Trash2, Plus } from "lucide-react";
+import { Eye, Trash2, Plus } from "lucide-react";
 import MainLayout from "../layouts/MainLayout";
 import ClientsTable from "../components/ui/table/ClientsTable";
 import SearchBar from "../components/ui/SearchBar";
@@ -9,8 +9,9 @@ import Modal from "../components/ui/Modal";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import EditClientForm from "../components/forms/EditClientForm";
 import type { EditClientFormData } from "../components/forms/EditClientForm";
-import { createClient } from "../api/clients";
+import { createClient, deleteClient } from "../api/clients";
 import { useClients } from "../hooks/useClients";
+import { useNavigate } from "react-router-dom";
 
 const FORM_ID = "create-client-form";
 
@@ -35,13 +36,21 @@ export default function Clients() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [deleteClientId, setDeleteClientId] = useState<number | null>(null);
   const debouncedSearch = useDebouncedValue(search);
   const { clientRows, count, isLoading, error, refresh } = useClients({ search: debouncedSearch || undefined, page });
+  const navigate = useNavigate();
+
+  const handleDeleteConfirm = async () => {
+    if (deleteClientId === null) return;
+    await deleteClient(deleteClientId);
+    setDeleteClientId(null);
+    refresh();
+  };
 
   const totalPages = Math.ceil(count / PAGE_SIZE);
 
   useEffect(() => { setPage(1); }, [debouncedSearch]);
-
   const handleCreateSubmit = async (data: EditClientFormData) => {
     const { ligne1, code_postal, ville, ...clientFields } = data;
 
@@ -95,8 +104,8 @@ export default function Clients() {
           <ClientsTable
             rows={clientRows}
             menuItems={(id) => [
-              { label: "Modifier", icon: <SquarePen size={18} />, onClick: () => alert(`Modifier client #${id}`) },
-              { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => alert(`Supprimer client #${id}`) },
+              { label: "Visualiser", icon: <Eye size={18} />, onClick: () => navigate(`/clients/${id}`) },
+              { label: "Supprimer", icon: <Trash2 size={18} />, onClick: () => setDeleteClientId(id) },
             ]}
           />
           <Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
@@ -115,6 +124,17 @@ export default function Clients() {
           formId={FORM_ID}
           onSubmit={handleCreateSubmit}
         />
+      </Modal>
+
+      <Modal
+        title="Supprimer le client"
+        isOpen={deleteClientId !== null}
+        onClose={() => setDeleteClientId(null)}
+        onConfirm={handleDeleteConfirm}
+        confirmLabel="Supprimer"
+        cancelLabel="Annuler"
+      >
+        <p>Êtes-vous sûr de vouloir supprimer ce client ? Cette action est irréversible.</p>
       </Modal>
     </MainLayout>
   );
