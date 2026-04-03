@@ -108,9 +108,9 @@ export default function DevisDetails() {
         buttonTertiary: { title: "Changer le statut", icon: RefreshCw, onClick: () => setIsStatusModalOpen(true) },
       }}
     >
-      <div className="flex flex-row-reverse gap-5 py-20 px-10 w-full">
-        <LittleClientsCard client={quote.client} className="w-1/3" />
-        <QuotesDetailsCard quote={quote} className="w-2/3" />
+      <div className="flex flex-col-reverse md:flex-row-reverse gap-5 py-10 md:py-20 px-4 md:px-10 w-full">
+        <LittleClientsCard client={quote.client} className="w-full md:w-1/3" />
+        <QuotesDetailsCard quote={quote} className="w-full md:w-2/3" />
       </div>
 
       <Modal

@@ -128,9 +128,9 @@ export default function ClientDetails() {
       {!client ? (
         <p className="text-text-placeholder py-10 text-center">Client introuvable.</p>
       ) : (
-        <div className="flex flex-row gap-5 py-20 px-10 w-full">
-          <ClientCard client={client} className="w-2/3" />
-          <div className="flex flex-col gap-5 w-1/3">
+        <div className="flex flex-col md:flex-row gap-5 py-10 md:py-20 px-4 md:px-10 w-full">
+          <ClientCard client={client} className="w-full md:w-2/3" />
+          <div className="flex flex-col gap-5 w-full md:w-1/3">
             <Card title="Factures" classNameHeader="text-center">
               {invoices.map(facture => (
                 <BillingRowClientCard
