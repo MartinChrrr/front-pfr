@@ -12,6 +12,10 @@ import type { Client } from "../types/client";
 import { getClient, updateClient } from "../api/clients";
 import { useQuotes } from "../hooks/useQuotes";
 import { useInvoices } from "../hooks/useInvoices";
+import EditInvoiceForm from "../components/forms/EditInvoiceForm";
+import type { EditInvoiceFormData } from "../components/forms/EditInvoiceForm";
+import { createInvoice } from "../api/invoices";
+import { useClients } from "../hooks/useClients";
 
 const FORM_ID = "edit-client-form";
 
@@ -20,6 +24,38 @@ export default function ClientDetails() {
   const [client, setClient] = useState<Client | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Controls the visibility of the create invoice modal
+  const [isCreateInvoiceModalOpen, setIsCreateInvoiceModalOpen] = useState(false);
+  // Fetches the list of clients for the form
+  const { clients } = useClients();
+  // Unique ID to link the confirm button to the form
+  const INVOICE_FORM_ID = "create-invoice-form";
+
+  // Sends the form data to the API then closes the modal
+  const handleCreateInvoiceSubmit = async (data: EditInvoiceFormData) => {
+    await createInvoice({
+      client_id: Number(data.client_id),
+      date_emission: data.date_emission,
+      date_echeance: data.date_echeance,
+      notes: data.notes,
+      // Maps each line with its order index
+      lignes: data.lignes.map((l, i) => ({
+        ordre: i + 1,
+        libelle: l.libelle,
+        quantite: l.quantite,
+        prix_unitaire_ht: l.prix_unitaire_ht,
+        taux_tva: l.taux_tva,
+      })),
+    });
+    setIsCreateInvoiceModalOpen(false);
+  };
+
+  // Triggers the form submission when the confirm button is clicked
+  const handleCreateInvoiceConfirm = () => {
+    const form = document.getElementById(INVOICE_FORM_ID) as HTMLFormElement | null;
+    form?.requestSubmit();
+  };
 
   const { quotes } = useQuotes(client ? { client_id: client.id } : undefined);
   const { invoices } = useInvoices(client ? { client: client.id } : undefined);
@@ -84,7 +120,8 @@ export default function ClientDetails() {
     <DetailsLayout
       header={{
         title: client ? client.raison_sociale : "Client",
-        buttonPrimary: { title: "Créer une facture", icon: SquarePen },
+        // Connects the "Créer une facture" button to open the modal
+        buttonPrimary: { title: "Créer une facture", icon: SquarePen, onClick: () => setIsCreateInvoiceModalOpen(true)},
         buttonSecondary: { title: "Modifier", icon: SquarePen, onClick: () => setIsEditModalOpen(true) },
       }}
     >
@@ -133,6 +170,34 @@ export default function ClientDetails() {
             formId={FORM_ID}
             onSubmit={handleEditSubmit}
           />
+        </Modal>
+      )}
+
+      {/* Only renders the modal if a client is loaded */}
+      {client && (
+        <Modal
+          title="Créer une facture"
+          isOpen={isCreateInvoiceModalOpen}
+          onClose={() => setIsCreateInvoiceModalOpen(false)}
+          onConfirm={handleCreateInvoiceConfirm}
+          confirmLabel="+ Créer la facture"
+        >
+      <EditInvoiceForm
+        formId={INVOICE_FORM_ID}
+        clients={clients}
+        defaultValues={{ 
+          // Pre-selects the current client
+          client_id: String(client.id),
+          // Sets today's date as emission date
+          date_emission: new Date().toISOString().slice(0, 10),
+          // Empty fields with their default values
+          date_echeance: "",
+          notes: "",
+          // Adds the default empty prestation line
+          lignes: [{ libelle: "", quantite: "1", prix_unitaire_ht: "", taux_tva: "20" }]
+        }}
+        onSubmit={handleCreateInvoiceSubmit}
+      />
         </Modal>
       )}
     </DetailsLayout>
