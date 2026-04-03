@@ -10,17 +10,17 @@ export default function ClientCard({ client, className }: ClientCardProps) {
     return (
     <Card title="Infomation du clients" className={className}>
         <p className="font-medium">Entreprise :</p>
-        <p className="px-2"> {client.raison_sociale ? client.raison_sociale : "Non renseigné"}</p>
+        <p className={`px-2 ${client.raison_sociale ? "" : "italic"}`}> {client.raison_sociale ? client.raison_sociale : "Non renseigné"}</p>
         <p className="font-medium"> Contact :</p>
-        <p className="px-2"> {client.contact_nom ? client.contact_nom : "Non renseigné"}</p>
+        <p className={`px-2 ${client.contact_nom ? "" : "italic"}`}> {client.contact_nom ? client.contact_nom : "Non renseigné"}</p>
         <p className="font-medium"> Email :</p>
-        <p className="px-2"> {client.contact_email ? client.contact_email : "Non renseigné"}</p>
+        <p className={`px-2 ${client.contact_email ? "" : "italic"}`}> {client.contact_email ? client.contact_email : "Non renseigné"}</p>
         <p className="font-medium"> Téléphone : </p>
-        <p className="px-2"> {client.contact_telephone ? client.contact_telephone : "Non renseigné"}</p>
+        <p className={`px-2 ${client.contact_telephone ? "" : "italic"}`}> {client.contact_telephone ? client.contact_telephone : "Non renseigné"}</p>
         <p className="font-medium"> Adresse :</p>
-        <p className="px-2"> {client.adresses[0]?.ligne1} {client.adresses[0]?.code_postal} {client.adresses[0]?.ville} </p>
+        <p className={`px-2 ${client.adresses[0]?.ligne1 ? "" : "italic"}`}> {client.adresses[0]?.ligne1 ? `${client.adresses[0]?.ligne1} ${client.adresses[0]?.code_postal} ${client.adresses[0]?.ville}` : "Non renseigné"} </p>
         <p className="font-medium"> Siret :</p>
-        <p className="px-2"> {client.siret ? client.siret : "Non renseigné"}</p>
+        <p className={`px-2 ${client.siret ? "" : "italic"}`}> {client.siret ? client.siret : "Non renseigné"}</p>
         <p className="font-medium"> Client depuis :</p>
         <p className="px-2">
           {

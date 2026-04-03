@@ -25,9 +25,15 @@ export default function ClientRow({ row, gridCols, menuItems }: ClientRowProps) 
       <span className={`text-caption font-medium truncate pr-4 ${row.contact_name ? "" : "italic"}`}>
         {row.contact_name ? row.contact_name : "Non renseigné"}
       </span>
-      <span className="text-caption font-medium truncate pr-4">{row.company_name}</span>
-      <span className="text-caption font-medium truncate pr-4">{row.email}</span>
-      <span className="hidden md:block text-caption font-medium">{row.phone}</span>
+      <span className={`text-caption font-medium truncate pr-4 ${row.company_name ? "" : "italic"}`}>
+        {row.company_name ? row.company_name : "Non renseigné"}
+      </span>
+      <span className={`text-caption font-medium truncate pr-4 ${row.email ? "" : "italic"}`}>
+        {row.email ? row.email : "Non renseigné"}
+      </span>
+      <span className={`hidden md:block text-caption font-medium ${row.phone ? "" : "italic"}`}>
+        {row.phone ? row.phone : "Non renseigné"}
+      </span>
       {menuItems && <div className="hidden md:block"><DropdownButton items={menuItems(row.id)} /></div>}
     </NavLink>
   );
