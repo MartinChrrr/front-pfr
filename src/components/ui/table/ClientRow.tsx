@@ -19,13 +19,16 @@ export default function ClientRow({ row, gridCols, menuItems }: ClientRowProps) 
   return (
     <NavLink
       to={`/clients/${row.id}`}
-      className={`grid ${gridCols} items-center px-[30px] py-5 hover:bg-table-2 transition-colors last:rounded-b-lg`}
+      className={`grid ${gridCols} items-center px-4 md:px-[30px] py-5 hover:bg-table-2 transition-colors last:rounded-b-lg`}
     >
-      <span className="text-caption font-medium truncate pr-4">{row.contact_name ? row.contact_name : "Non renseigné"}</span>
+      {/* Conditional class : if contact_name exists, no italic, otherwise italic is applied */}
+      <span className={`text-caption font-medium truncate pr-4 ${row.contact_name ? "" : "italic"}`}>
+        {row.contact_name ? row.contact_name : "Non renseigné"}
+      </span>
       <span className="text-caption font-medium truncate pr-4">{row.company_name}</span>
       <span className="text-caption font-medium truncate pr-4">{row.email}</span>
-      <span className="text-caption font-medium">{row.phone}</span>
-      {menuItems && <DropdownButton items={menuItems(row.id)} />}
+      <span className="hidden md:block text-caption font-medium">{row.phone}</span>
+      {menuItems && <div className="hidden md:block"><DropdownButton items={menuItems(row.id)} /></div>}
     </NavLink>
   );
 }

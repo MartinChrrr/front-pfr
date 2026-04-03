@@ -9,20 +9,17 @@ interface ClientsTableProps {
   menuItems?: (id: number) => DropdownItem[];
 }
 
-const gridCols = "grid-cols-[1.2fr_1.5fr_1.5fr_1fr_40px]";
-
-const headers = ["Nom", "Entreprise", "Email", "Téléphone"] as const;
+const gridCols = "grid-cols-[1fr_1fr_1.5fr] md:grid-cols-[1.2fr_1.5fr_1.5fr_1fr_40px]";
 
 export default function ClientsTable({ rows, menuItems }: ClientsTableProps) {
   return (
     <div className="w-full rounded-lg border border-black overflow-visible divide-y divide-black">
-      <div className={`grid ${gridCols} items-center px-[30px] py-5`}>
-        {headers.map((label) => (
-          <span key={label} className="text-caption font-medium text-text-black">
-            {label}
-          </span>
-        ))}
-        <span />
+      <div className={`grid ${gridCols} items-center px-4 md:px-[30px] py-5`}>
+        <span className="text-caption font-medium text-text-black">Nom</span>
+        <span className="text-caption font-medium text-text-black">Entreprise</span>
+        <span className="text-caption font-medium text-text-black">Email</span>
+        <span className="hidden md:block text-caption font-medium text-text-black">Téléphone</span>
+        <span className="hidden md:block" />
       </div>
 
       {rows.map((row) => (

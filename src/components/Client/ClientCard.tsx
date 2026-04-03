@@ -21,8 +21,15 @@ export default function ClientCard({ client, className }: ClientCardProps) {
         <p> {client.adresses[0]?.ligne1} {client.adresses[0]?.code_postal} {client.adresses[0]?.ville} </p>
         <p> Siret :</p>
         <p> {client.siret}</p>
-        <p>Client depuis :</p>
-        <p> {client.created_at}</p>
+        <p> Client depuis :</p>
+        <p>
+          {
+            // Converts raw text "2026-04-02T10:30:00" to a JS date object
+            new Date(client.created_at)
+            // Formats it to French date format : 02/04/2026
+            .toLocaleDateString("fr-FR")
+          }
+        </p>
     </Card>
     );
 }
