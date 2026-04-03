@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Plus, Trash2 } from "lucide-react";
 import type { Client } from "../../types/client";
 import Button from "../ui/Button";
+import { useAuth } from "../../hooks/useAuth";
+import { addDays } from "../../utils/date";
 
 interface InvoiceLineFormData {
   libelle: string;
@@ -26,17 +29,22 @@ type EditInvoiceFormProps = {
 };
 
 export default function EditInvoiceForm({ formId, clients, defaultValues, onSubmit }: EditInvoiceFormProps) {
+  const { configuration } = useAuth();
+  const paymentDeadlineDays = configuration?.payment_deadline_days ?? 30;
+  const today = new Date().toISOString().slice(0, 10);
+
   const {
     register,
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<EditInvoiceFormData>({
     defaultValues: defaultValues ?? {
       client_id: "",
-      date_emission: "",
-      date_echeance: "",
+      date_emission: today,
+      date_echeance: addDays(today, paymentDeadlineDays),
       notes: "",
       lignes: [{ libelle: "", quantite: "1", prix_unitaire_ht: "", taux_tva: "20" }],
     },
@@ -44,6 +52,13 @@ export default function EditInvoiceForm({ formId, clients, defaultValues, onSubm
 
   const { fields, append, remove } = useFieldArray({ control, name: "lignes" });
   const lignes = watch("lignes");
+  const dateEmission = watch("date_emission");
+
+  useEffect(() => {
+    if (dateEmission) {
+      setValue("date_echeance", addDays(dateEmission, paymentDeadlineDays));
+    }
+  }, [dateEmission, paymentDeadlineDays, setValue]);
 
   const computeTotal = (line: InvoiceLineFormData) => {
     const qty = parseFloat(line.quantite) || 0;

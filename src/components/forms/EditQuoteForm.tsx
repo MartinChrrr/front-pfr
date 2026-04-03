@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Plus, Trash2 } from "lucide-react";
 import type { Client } from "../../types/client";
 import Button from "../ui/Button";
+import { useAuth } from "../../hooks/useAuth";
+import { addDays } from "../../utils/date";
 
 interface QuoteLineFormData {
   libelle: string;
@@ -26,17 +29,22 @@ type EditQuoteFormProps = {
 };
 
 export default function EditQuoteForm({ formId, clients, defaultValues, onSubmit }: EditQuoteFormProps) {
+  const { configuration } = useAuth();
+  const quoteValidityDays = configuration?.quote_validity_days ?? 30;
+  const today = new Date().toISOString().slice(0, 10);
+
   const {
     register,
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<EditQuoteFormData>({
     defaultValues: defaultValues ?? {
       client_id: "",
-      date_emission: "",
-      date_validite: "",
+      date_emission: today,
+      date_validite: addDays(today, quoteValidityDays),
       notes: "",
       lignes: [{ libelle: "", quantite: "1", prix_unitaire_ht: "", taux_tva: "20" }],
     },
@@ -44,6 +52,13 @@ export default function EditQuoteForm({ formId, clients, defaultValues, onSubmit
 
   const { fields, append, remove } = useFieldArray({ control, name: "lignes" });
   const lignes = watch("lignes");
+  const dateEmission = watch("date_emission");
+
+  useEffect(() => {
+    if (dateEmission) {
+      setValue("date_validite", addDays(dateEmission, quoteValidityDays));
+    }
+  }, [dateEmission, quoteValidityDays, setValue]);
 
   const computeTotal = (line: QuoteLineFormData) => {
     const qty = parseFloat(line.quantite) || 0;
