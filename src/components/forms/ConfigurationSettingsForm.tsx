@@ -55,7 +55,7 @@ export default function ConfigurationSettingsForm() {
         <p className="text-sm text-success">Modifications enregistrées avec succès.</p>
       )}
 
-      <div className="flex gap-[31px]">
+      <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Préfixe devis <span className="text-alert">* (Obligatoire)</span>
@@ -87,7 +87,7 @@ export default function ConfigurationSettingsForm() {
         </div>
       </div>
 
-      <div className="flex gap-[31px]">
+      <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">Prochain n° de devis</label>
           <input
@@ -115,7 +115,7 @@ export default function ConfigurationSettingsForm() {
         </div>
       </div>
 
-      <div className="flex gap-[31px]">
+      <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Délai de paiement (jours) <span className="text-alert">* (Obligatoire)</span>

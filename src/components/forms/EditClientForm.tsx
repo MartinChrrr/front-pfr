@@ -69,7 +69,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
       </div>
 
     {/* ### Email ### */}
-      <div className="flex gap-5">
+      <div className="flex flex-col md:flex-row gap-5">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Email <span className="text-alert">*</span>
@@ -121,7 +121,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
       </div>
 
     {/* ### Contact's email ### */}
-      <div className="flex gap-5">
+      <div className="flex flex-col md:flex-row gap-5">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Email du contact
@@ -168,7 +168,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
       </div>
 
     {/* ### Postal code ### */}
-      <div className="flex gap-5">
+      <div className="flex flex-col md:flex-row gap-5">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Code postal <span className="text-alert">*</span>

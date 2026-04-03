@@ -17,7 +17,7 @@ function formatDate(date: string): string {
 export default function InvoicesDetailsCard({ invoice, className }: InvoicesDetailsCardProps) {
     return(
         <Card title="Details de la facture" borderHeader={true} className={`gap-2.5 ${className}`}>
-            <div className="grid grid-cols-3 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
                 <div className="text-center">
                     <p className="">Date d'émission</p>
                     <p className="py-2">{formatDate(invoice.date_emission)}</p>
@@ -30,11 +30,37 @@ export default function InvoicesDetailsCard({ invoice, className }: InvoicesDeta
                     <p className="">Statut</p>
                     <StatusBadge status={invoice.statut} />
                 </div>
-                
+
             </div>
             <Separator />
             <p className="text-black text-medium-bold">Prestation</p>
-            <div className="grid grid-cols-[3fr_1fr_1fr_1fr] w-full text-sm gap-y-2.5">
+
+            {/* Mobile: vue empilée */}
+            <div className="md:hidden w-full text-sm">
+                {invoice.lignes.map((line, index) => (
+                    <div key={line.id ?? line.ordre}>
+                        {index > 0 && <Separator />}
+                        <div className="flex flex-col gap-1 py-3">
+                            <p className="font-medium text-black">{line.libelle}</p>
+                            <p className="pl-4">Quantité : {line.quantite}</p>
+                            <p className="pl-4">Prix unitaire : {line.prix_unitaire_ht}€</p>
+                            <p className="pl-4">Montant HT : {line.montant_ht}€</p>
+                        </div>
+                    </div>
+                ))}
+                <Separator />
+                <div className="grid grid-cols-2 gap-x-8 gap-y-1 mt-2 ml-auto w-fit">
+                    <p>Sous Total</p>
+                    <p className="text-right">{invoice.total_ht}€</p>
+                    <p>TVA</p>
+                    <p className="text-right">{invoice.total_tva}€</p>
+                    <p className="text-medium-bold text-black">TOTAL</p>
+                    <p className="text-right text-medium-bold text-black">{invoice.total_ttc}€</p>
+                </div>
+            </div>
+
+            {/* Desktop: grid 4 colonnes */}
+            <div className="hidden md:grid grid-cols-[3fr_1fr_1fr_1fr] w-full text-sm gap-y-2.5">
                 <p className="pb-2">Description</p>
                 <p className="pb-2 text-right">QTÉ</p>
                 <p className="pb-2 text-right">PU</p>

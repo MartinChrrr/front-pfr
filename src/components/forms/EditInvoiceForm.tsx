@@ -76,7 +76,7 @@ export default function EditInvoiceForm({ formId, clients, defaultValues, onSubm
 
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-      <div className="flex gap-5">
+      <div className="flex flex-col md:flex-row gap-5">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Client <span className="text-alert">*</span>
@@ -125,7 +125,7 @@ export default function EditInvoiceForm({ formId, clients, defaultValues, onSubm
       </div>
 
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
           <label className="font-medium">Prestation</label>
           <Button
             type="button"
@@ -136,49 +136,100 @@ export default function EditInvoiceForm({ formId, clients, defaultValues, onSubm
           </Button>
         </div>
 
-        <div className="grid grid-cols-[3fr_1fr_1fr_1fr_40px] gap-x-3 text-sm font-medium">
-          <span>Nom de la prestation</span>
-          <span className="text-center">QTÉ</span>
-          <span className="text-center">PU</span>
-          <span className="text-center">Total</span>
-          <span />
+        {/* Mobile: vue empilée */}
+        <div className="md:hidden flex flex-col gap-3">
+          {fields.map((field, index) => (
+            <div key={field.id} className="flex flex-col gap-2 border-b border-text-placeholder pb-3">
+              <div>
+                <span className="text-sm font-medium">Description</span>
+                <input
+                  type="text"
+                  {...register(`lignes.${index}.libelle`, { required: "Requis" })}
+                  className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
+                />
+                {errors.lignes?.[index]?.libelle && (
+                  <p className="mt-1 text-xs text-alert">{errors.lignes[index].libelle?.message}</p>
+                )}
+              </div>
+              <div className="pl-4 flex items-center gap-2">
+                <span className="text-sm font-medium w-24 shrink-0">Quantité</span>
+                <input
+                  type="number"
+                  min="1"
+                  {...register(`lignes.${index}.quantite`, { required: "Requis" })}
+                  className="w-full rounded-lg border border-text-placeholder px-3 py-2 text-center outline-none focus:border-primary-300"
+                />
+              </div>
+              <div className="pl-4 flex items-center gap-2">
+                <span className="text-sm font-medium w-24 shrink-0">Prix unitaire</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  {...register(`lignes.${index}.prix_unitaire_ht`, { required: "Requis" })}
+                  className="w-full rounded-lg border border-text-placeholder px-3 py-2 text-center outline-none focus:border-primary-300"
+                />
+              </div>
+              <div className="pl-4 flex items-center justify-between">
+                <span className="text-sm">Total : {computeTotal(lignes?.[index] ?? { libelle: "", quantite: "0", prix_unitaire_ht: "0", taux_tva: "20" }).toFixed(2)}€</span>
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="text-alert hover:text-red-700 transition"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+              <input type="hidden" {...register(`lignes.${index}.taux_tva`)} />
+            </div>
+          ))}
         </div>
 
-        {fields.map((field, index) => (
-          <div key={field.id} className="grid grid-cols-[3fr_1fr_1fr_1fr_40px] items-center gap-x-3">
-            <div>
-              <input
-                type="text"
-                {...register(`lignes.${index}.libelle`, { required: "Requis" })}
-                className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
-              />
-              {errors.lignes?.[index]?.libelle && (
-                <p className="mt-1 text-xs text-alert">{errors.lignes[index].libelle?.message}</p>
-              )}
-            </div>
-            <input
-              type="number"
-              min="1"
-              {...register(`lignes.${index}.quantite`, { required: "Requis" })}
-              className="w-full rounded-lg border border-text-placeholder px-3 py-2 text-center outline-none focus:border-primary-300"
-            />
-            <input
-              type="number"
-              step="0.01"
-              {...register(`lignes.${index}.prix_unitaire_ht`, { required: "Requis" })}
-              className="w-full rounded-lg border border-text-placeholder px-3 py-2 text-center outline-none focus:border-primary-300"
-            />
-            <p className="text-center">{computeTotal(lignes?.[index] ?? { libelle: "", quantite: "0", prix_unitaire_ht: "0", taux_tva: "20" }).toFixed(2)}</p>
-            <button
-              type="button"
-              onClick={() => remove(index)}
-              className="text-alert hover:text-red-700 transition"
-            >
-              <Trash2 size={18} />
-            </button>
-            <input type="hidden" {...register(`lignes.${index}.taux_tva`)} />
+        {/* Desktop: grid 5 colonnes */}
+        <div className="hidden md:block">
+          <div className="grid grid-cols-[3fr_1fr_1fr_1fr_40px] gap-x-3 text-sm font-medium">
+            <span>Nom de la prestation</span>
+            <span className="text-center">QTÉ</span>
+            <span className="text-center">PU</span>
+            <span className="text-center">Total</span>
+            <span />
           </div>
-        ))}
+
+          {fields.map((field, index) => (
+            <div key={field.id} className="grid grid-cols-[3fr_1fr_1fr_1fr_40px] items-center gap-x-3">
+              <div>
+                <input
+                  type="text"
+                  {...register(`lignes.${index}.libelle`, { required: "Requis" })}
+                  className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
+                />
+                {errors.lignes?.[index]?.libelle && (
+                  <p className="mt-1 text-xs text-alert">{errors.lignes[index].libelle?.message}</p>
+                )}
+              </div>
+              <input
+                type="number"
+                min="1"
+                {...register(`lignes.${index}.quantite`, { required: "Requis" })}
+                className="w-full rounded-lg border border-text-placeholder px-3 py-2 text-center outline-none focus:border-primary-300"
+              />
+              <input
+                type="number"
+                step="0.01"
+                {...register(`lignes.${index}.prix_unitaire_ht`, { required: "Requis" })}
+                className="w-full rounded-lg border border-text-placeholder px-3 py-2 text-center outline-none focus:border-primary-300"
+              />
+              <p className="text-center">{computeTotal(lignes?.[index] ?? { libelle: "", quantite: "0", prix_unitaire_ht: "0", taux_tva: "20" }).toFixed(2)}</p>
+              <button
+                type="button"
+                onClick={() => remove(index)}
+                className="text-alert hover:text-red-700 transition"
+              >
+                <Trash2 size={18} />
+              </button>
+              <input type="hidden" {...register(`lignes.${index}.taux_tva`)} />
+            </div>
+          ))}
+        </div>
 
         <div className="flex justify-end">
           <div className="grid grid-cols-2 gap-x-8 gap-y-1 text-sm">

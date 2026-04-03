@@ -52,7 +52,7 @@ export default function OnboardingForm() {
         )}
       </div>
 
-      <div className="flex gap-[31px]">
+      <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             SIRET <span className="text-alert">* (Obligatoire)</span>
@@ -99,7 +99,7 @@ export default function OnboardingForm() {
         )}
       </div>
 
-      <div className="flex gap-[31px]">
+      <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Code postal <span className="text-alert">* (Obligatoire)</span>

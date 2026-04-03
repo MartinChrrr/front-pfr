@@ -28,10 +28,12 @@ export default function HeaderDetails({ title, buttonPrimary, buttonSecondary, b
   return (
     <div className="flex bg-white px-1.25 py-1.25 w-full">
         <div className="flex flex-row justify-between items-center w-full px-5 py-2.5">
-            <Button variant="outline" onClick={() => navigate(-1)}>
-                <MoveLeft size={18}/>
-                <p>Retour</p>
-            </Button>
+            <div className="hidden md:block">
+              <Button variant="outline" onClick={() => navigate(-1)}>
+                  <MoveLeft size={18}/>
+                  <p>Retour</p>
+              </Button>
+            </div>
 
             <h2 className="text-xl font-bold">{title}</h2>
 

@@ -55,7 +55,7 @@ export default function ProfileSettingsForm() {
         <p className="text-sm text-success">Modifications enregistrées avec succès.</p>
       )}
 
-      <div className="flex gap-[31px]">
+      <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Prénom <span className="text-alert">* (Obligatoire)</span>
@@ -117,7 +117,7 @@ export default function ProfileSettingsForm() {
         )}
       </div>
 
-      <div className="flex gap-[31px]">
+      <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Code postal <span className="text-alert">* (Obligatoire)</span>

@@ -18,8 +18,31 @@ export default function Settings() {
     <MainLayout>
       <h1 className="text-2xl font-bold">Paramètres</h1>
 
-      <div className="flex gap-8">
-        <nav className="flex w-[220px] shrink-0 flex-col gap-1">
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Mobile: onglets horizontaux */}
+        <nav className="flex md:hidden gap-1 border-b border-text-placeholder">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "border-b-2 border-primary-300 text-primary-700"
+                    : "text-text-placeholder hover:text-primary-700"
+                }`}
+              >
+                <Icon size={18} />
+                {tab.label}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Desktop: barre latérale */}
+        <nav className="hidden md:flex w-[220px] shrink-0 flex-col gap-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.key;
@@ -40,7 +63,7 @@ export default function Settings() {
           })}
         </nav>
 
-        <div className="flex-1 rounded-xl bg-white p-8 shadow-sm">
+        <div className="flex-1 rounded-xl bg-white p-4 md:p-8 shadow-sm">
           {activeTab === "profile" ? (
             <ProfileSettingsForm />
           ) : (
