@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { LogOut } from "lucide-react";
+import { LogOut, X } from "lucide-react";
 import SidebarItem from "./SidebarItem";
 import SidebarItemGroup from "./SidebarItemGroup";
 import SidebarProfile from "./SidebarProfile";
@@ -25,17 +25,33 @@ type SidebarProps = {
   items: SidebarEntry[];
   logo?: React.ReactNode;
   onLogout?: () => void;
+  mobileOpen?: boolean;
+  onCloseMobile?: () => void;
 };
 
 export default function Sidebar({
   items,
   logo,
   onLogout,
+  mobileOpen = false,
+  onCloseMobile,
 }: SidebarProps) {
-  return (
+  const sidebarContent = (
     <aside className="flex h-full w-[268px] flex-col justify-between bg-primary-500 p-4">
       <div className="flex flex-col gap-4">
-        {logo && <div className="px-[10px] py-2">{logo}</div>}
+        <div className="flex items-center justify-between px-[10px] py-2">
+          {logo}
+          {onCloseMobile && (
+            <button
+              type="button"
+              onClick={onCloseMobile}
+              className="md:hidden rounded-lg p-1 text-white hover:bg-primary-700 transition-colors cursor-pointer"
+              aria-label="Fermer le menu"
+            >
+              <X size={24} />
+            </button>
+          )}
+        </div>
 
         <nav className="flex flex-col gap-1">
           {items.map((entry) =>
@@ -74,6 +90,29 @@ export default function Sidebar({
         </button>
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar */}
+      <div className="hidden md:flex">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile drawer overlay */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div
+            className="fixed inset-0 bg-black/50"
+            onClick={onCloseMobile}
+            onKeyDown={(e) => e.key === "Escape" && onCloseMobile?.()}
+          />
+          <div className="relative z-10">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
