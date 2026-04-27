@@ -45,14 +45,17 @@ export default function OnboardingConfigForm() {
         <p className="text-sm text-alert">{globalError}</p>
       )}
 
+      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
+
       <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Préfixe devis <span className="text-alert">* (Obligatoire)</span>
+            Préfixe devis <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="DEV"
+            aria-required="true"
             {...register("quote_prefix", { required: "Préfixe devis requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
@@ -63,11 +66,12 @@ export default function OnboardingConfigForm() {
 
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Préfixe facture <span className="text-alert">* (Obligatoire)</span>
+            Préfixe facture <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="FAC"
+            aria-required="true"
             {...register("invoice_prefix", { required: "Préfixe facture requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
@@ -112,11 +116,12 @@ export default function OnboardingConfigForm() {
       <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Délai de paiement (jours) <span className="text-alert">* (Obligatoire)</span>
+            Délai de paiement (jours) <span className="text-alert">*</span>
           </label>
           <input
             type="number"
             min={1}
+            aria-required="true"
             {...register("payment_deadline_days", { required: "Délai requis", valueAsNumber: true })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
@@ -127,11 +132,12 @@ export default function OnboardingConfigForm() {
 
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Validité devis (jours) <span className="text-alert">* (Obligatoire)</span>
+            Validité devis (jours) <span className="text-alert">*</span>
           </label>
           <input
             type="number"
             min={1}
+            aria-required="true"
             {...register("quote_validity_days", { required: "Validité requise", valueAsNumber: true })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />

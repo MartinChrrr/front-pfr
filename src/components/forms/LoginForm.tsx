@@ -36,6 +36,8 @@ export default function LoginForm() {
         <p className="text-sm text-alert">{globalError}</p>
       )}
 
+      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
+
       <div className="flex flex-col gap-[10px]">
         <label className="text-sm font-medium">
           Email <span className="text-alert">*</span>
@@ -43,6 +45,7 @@ export default function LoginForm() {
         <input
           type="email"
           placeholder="@gmail.com"
+          aria-required="true"
           {...register("email", {
             required: "Email requis",
             pattern: { value: /^[^@]+@[^@]+\.[^@]+$/, message: "Email invalide" },
@@ -62,6 +65,7 @@ export default function LoginForm() {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="********"
+            aria-required="true"
             {...register("password", { required: "Mot de passe requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 pr-10 outline-none focus:border-primary-300"
           />

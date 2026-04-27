@@ -76,12 +76,15 @@ export default function EditInvoiceForm({ formId, clients, defaultValues, onSubm
 
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
+
       <div className="flex flex-col md:flex-row gap-5">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
             Client <span className="text-alert">*</span>
           </label>
           <select
+            aria-required="true"
             {...register("client_id", { required: "Client requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           >
@@ -101,6 +104,7 @@ export default function EditInvoiceForm({ formId, clients, defaultValues, onSubm
           </label>
           <input
             type="date"
+            aria-required="true"
             {...register("date_emission", { required: "Date d'émission requise" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
@@ -115,6 +119,7 @@ export default function EditInvoiceForm({ formId, clients, defaultValues, onSubm
           </label>
           <input
             type="date"
+            aria-required="true"
             {...register("date_echeance", { required: "Date d'échéance requise" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />

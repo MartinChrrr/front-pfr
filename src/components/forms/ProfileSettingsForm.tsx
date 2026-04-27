@@ -55,14 +55,17 @@ export default function ProfileSettingsForm() {
         <p className="text-sm text-success">Modifications enregistrées avec succès.</p>
       )}
 
+      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
+
       <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Prénom <span className="text-alert">* (Obligatoire)</span>
+            Prénom <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="Jean"
+            aria-required="true"
             {...register("first_name", { required: "Prénom requis" })}
             className={inputClass}
           />
@@ -73,11 +76,12 @@ export default function ProfileSettingsForm() {
 
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Nom <span className="text-alert">* (Obligatoire)</span>
+            Nom <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="Dupont"
+            aria-required="true"
             {...register("last_name", { required: "Nom requis" })}
             className={inputClass}
           />
@@ -89,11 +93,12 @@ export default function ProfileSettingsForm() {
 
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
-          Téléphone <span className="text-alert">* (Obligatoire)</span>
+          Téléphone <span className="text-alert">*</span>
         </label>
         <input
           type="tel"
           placeholder="06 12 34 56 78"
+          aria-required="true"
           {...register("phone", { required: "Téléphone requis" })}
           className={inputClass}
         />
@@ -104,11 +109,12 @@ export default function ProfileSettingsForm() {
 
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
-          Adresse <span className="text-alert">* (Obligatoire)</span>
+          Adresse <span className="text-alert">*</span>
         </label>
         <input
           type="text"
           placeholder="12 rue de la Paix"
+          aria-required="true"
           {...register("address", { required: "Adresse requise" })}
           className={inputClass}
         />
@@ -120,11 +126,12 @@ export default function ProfileSettingsForm() {
       <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Code postal <span className="text-alert">* (Obligatoire)</span>
+            Code postal <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="75001"
+            aria-required="true"
             {...register("postal_code", { required: "Code postal requis" })}
             className={inputClass}
           />
@@ -135,11 +142,12 @@ export default function ProfileSettingsForm() {
 
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Ville <span className="text-alert">* (Obligatoire)</span>
+            Ville <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="Paris"
+            aria-required="true"
             {...register("city", { required: "Ville requise" })}
             className={inputClass}
           />

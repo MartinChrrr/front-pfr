@@ -37,13 +37,16 @@ export default function OnboardingForm() {
         <p className="text-sm text-alert">{globalError}</p>
       )}
 
+      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
+
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
-          Nom de l'entreprise <span className="text-alert">* (Obligatoire)</span>
+          Nom de l'entreprise <span className="text-alert">*</span>
         </label>
         <input
           type="text"
           placeholder="Ma Société SAS"
+          aria-required="true"
           {...register("company_name", { required: "Nom de l'entreprise requis" })}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
         />
@@ -55,11 +58,12 @@ export default function OnboardingForm() {
       <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            SIRET <span className="text-alert">* (Obligatoire)</span>
+            SIRET <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="123 456 789 00012"
+            aria-required="true"
             {...register("siret", { required: "SIRET requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
@@ -70,11 +74,12 @@ export default function OnboardingForm() {
 
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Téléphone <span className="text-alert">* (Obligatoire)</span>
+            Téléphone <span className="text-alert">*</span>
           </label>
           <input
             type="tel"
             placeholder="06 12 34 56 78"
+            aria-required="true"
             {...register("phone", { required: "Téléphone requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
@@ -86,11 +91,12 @@ export default function OnboardingForm() {
 
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
-          Adresse <span className="text-alert">* (Obligatoire)</span>
+          Adresse <span className="text-alert">*</span>
         </label>
         <input
           type="text"
           placeholder="12 rue de la Paix"
+          aria-required="true"
           {...register("address", { required: "Adresse requise" })}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
         />
@@ -102,11 +108,12 @@ export default function OnboardingForm() {
       <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Code postal <span className="text-alert">* (Obligatoire)</span>
+            Code postal <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="75001"
+            aria-required="true"
             {...register("postal_code", { required: "Code postal requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
@@ -117,11 +124,12 @@ export default function OnboardingForm() {
 
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Ville <span className="text-alert">* (Obligatoire)</span>
+            Ville <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="Paris"
+            aria-required="true"
             {...register("city", { required: "Ville requise" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />

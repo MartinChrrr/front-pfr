@@ -49,6 +49,8 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
 
+      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
+
     {/* ### Enterprise name ### */}
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
@@ -56,9 +58,10 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         </label>
         <input
           type="text"
-          {...register("raison_sociale", { 
-          required: "Raison sociale requise", 
-          maxLength: { value: 200, 
+          aria-required="true"
+          {...register("raison_sociale", {
+          required: "Raison sociale requise",
+          maxLength: { value: 200,
           message: "Maximum 200 caractères" }
           })}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
@@ -76,6 +79,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           </label>
           <input
             type="email"
+            aria-required="true"
             {...register("email", {
               required: "Email requis",
               pattern: { value: /^[^@]+@[^@]+\.[^@]+$/, message: "Email invalide" },
@@ -94,12 +98,13 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           </label>
           <input
             type="tel"
-            {...register("telephone", { 
+            aria-required="true"
+            {...register("telephone", {
               required: "Téléphone requis",
-              pattern: { value: /^[0-9\s\+\-\.]{10,15}$/, 
+              pattern: { value: /^[0-9\s\+\-\.]{10,15}$/,
               message: "Téléphone invalide" }
               })}
-            
+
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
           />
           {errors.telephone && (
@@ -156,8 +161,9 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         </label>
         <input
           type="text"
+          aria-required="true"
           {...register("ligne1", { required: "Adresse requise",
-          maxLength: { value: 200, 
+          maxLength: { value: 200,
           message: "Maximum 200 caractères" }
           })}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
@@ -175,9 +181,10 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           </label>
           <input
             type="text"
-            {...register("code_postal", { 
-            required: "Code postal requis", 
-            pattern: { value: /^\d{5}$/, 
+            aria-required="true"
+            {...register("code_postal", {
+            required: "Code postal requis",
+            pattern: { value: /^\d{5}$/,
             message: "Code postal invalide (5 chiffres)" }
             })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
@@ -194,8 +201,9 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           </label>
           <input
             type="text"
-            {...register("ville", { required: "Ville requise", 
-            pattern: { value: /^[a-zA-ZÀ-ÿ\s\-]+$/, 
+            aria-required="true"
+            {...register("ville", { required: "Ville requise",
+            pattern: { value: /^[a-zA-ZÀ-ÿ\s\-]+$/,
             message: "Ville invalide" }
             })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
@@ -213,9 +221,10 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
         </label>
         <input
           type="text"
-          {...register("siret", { 
+          aria-required="true"
+          {...register("siret", {
           required: "SIRET requis",
-          pattern: { value: /^\d{14}$/, 
+          pattern: { value: /^\d{14}$/,
           message: "SIRET invalide (14 chiffres)" }
           })}
           className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"

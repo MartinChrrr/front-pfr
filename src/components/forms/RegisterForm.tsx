@@ -38,14 +38,17 @@ export default function RegisterForm() {
         <p className="text-sm text-alert">{globalError}</p>
       )}
 
+      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
+
       <div className="flex gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Prénom <span className="text-alert">* (Obligatoire)</span>
+            Prénom <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="Jean"
+            aria-required="true"
             {...register("first_name", { required: "Prénom requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 text-sm outline-none focus:border-primary-300"
           />
@@ -56,11 +59,12 @@ export default function RegisterForm() {
 
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
-            Nom <span className="text-alert">* (Obligatoire)</span>
+            Nom <span className="text-alert">*</span>
           </label>
           <input
             type="text"
             placeholder="Dupont"
+            aria-required="true"
             {...register("last_name", { required: "Nom requis" })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 text-sm outline-none focus:border-primary-300"
           />
@@ -72,11 +76,12 @@ export default function RegisterForm() {
 
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
-          Email <span className="text-alert">* (Obligatoire)</span>
+          Email <span className="text-alert">*</span>
         </label>
         <input
           type="email"
           placeholder="@gmail.com"
+          aria-required="true"
           {...register("email", {
             required: "Email requis",
             pattern: { value: /^[^@]+@[^@]+\.[^@]+$/, message: "Email invalide" },
@@ -90,12 +95,13 @@ export default function RegisterForm() {
 
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
-          Mot de passe <span className="text-alert">* (Obligatoire)</span>
+          Mot de passe <span className="text-alert">*</span>
         </label>
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
             placeholder="********"
+            aria-required="true"
             {...register("password", {
               required: "Mot de passe requis",
               minLength: { value: 8, message: "8 caracteres minimum" },
@@ -117,12 +123,13 @@ export default function RegisterForm() {
 
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
-          Confirmer le mot de passe <span className="text-alert">* (Obligatoire)</span>
+          Confirmer le mot de passe <span className="text-alert">*</span>
         </label>
         <div className="relative">
           <input
             type={showConfirm ? "text" : "password"}
             placeholder="********"
+            aria-required="true"
             {...register("password_confirm", {
               required: "Confirmation requise",
               validate: (value) =>
