@@ -7,10 +7,10 @@ interface LastTransactionRowProps {
 
 export default function LastTransactionRow({ transaction }: LastTransactionRowProps) {
   return (
-    <div className="flex justify-between items-center py-2 border-b last:border-0">
-      <p className="text-caption">{formatDateFR(transaction.updated_at.split("T")[0])}</p>
-      <p className="text-caption">{transaction.numero} - {transaction.client}</p>
-      <p className="text-caption font-medium text-green-600">+{parseFloat(transaction.total_ttc).toFixed(2)}€</p>
+    <div className="flex justify-between items-center py-2 border-b last:border-0 min-h-22">
+      <p className="font-medium">{formatDateFR(transaction.updated_at.split("T")[0])}</p>
+      <p className="">{transaction.numero} - {transaction.client}</p>
+      <p className="font-medium text-green-600">+{parseFloat(transaction.total_ttc).toFixed(2)}€</p>
     </div>
   );
 }
