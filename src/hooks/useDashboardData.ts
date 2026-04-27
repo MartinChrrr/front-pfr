@@ -1,21 +1,8 @@
-import { useMemo } from "react";
-import { useInvoices } from "./useInvoices";
-import { useQuotes } from "./useQuotes";
-import type { Invoice, InvoiceStatus } from "../types/invoice";
-import type { QuoteStatus } from "../types/quote";
+import { useEffect, useState } from "react";
+import { getDashboardStats } from "../api/dashboard";
+import type { DashboardStats, LastTransaction, UpcomingDeadline } from "../api/dashboard";
 
-const MONTHS = ["Jan", "Fév", "Mar", "Avr", "Mai", "Jun", "Jul", "Aoû", "Sep", "Oct", "Nov", "Déc"];
-
-export type DeadlineType = "facture" | "devis";
-
-export interface UpcomingDeadline {
-  id: number;
-  numero: string;
-  client: string;
-  date: string;
-  statut: InvoiceStatus | QuoteStatus;
-  type: DeadlineType;
-}
+export type { LastTransaction, UpcomingDeadline };
 
 export interface MonthlyRevenuePoint {
   month: string;
@@ -27,81 +14,50 @@ export interface DashboardData {
   monthlyProfit: number;
   pendingTotal: number;
   upcomingDeadlines: UpcomingDeadline[];
-  lastTransactions: Invoice[];
+  lastTransactions: LastTransaction[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+const EMPTY_STATS: DashboardData = {
+  monthlyRevenue: [],
+  monthlyProfit: 0,
+  pendingTotal: 0,
+  upcomingDeadlines: [],
+  lastTransactions: [],
+  isLoading: true,
+  error: null,
+};
+
+function toData(stats: DashboardStats): Omit<DashboardData, "isLoading" | "error"> {
+  return {
+    monthlyRevenue: stats.monthly_revenue.map((p) => ({ month: p.month, total: parseFloat(p.total) })),
+    monthlyProfit: parseFloat(stats.monthly_profit),
+    pendingTotal: parseFloat(stats.pending_total),
+    upcomingDeadlines: stats.upcoming_deadlines,
+    lastTransactions: stats.last_transactions,
+  };
 }
 
 export function useDashboardData(): DashboardData {
-  const { invoices } = useInvoices({});
-  const { quotes } = useQuotes({});
+  const [state, setState] = useState<DashboardData>(EMPTY_STATS);
 
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth();
+  useEffect(() => {
+    let cancelled = false;
+    setState((s) => ({ ...s, isLoading: true, error: null }));
 
-  const monthlyRevenue = useMemo<MonthlyRevenuePoint[]>(() => {
-    return MONTHS.map((month, index) => {
-      const total = invoices
-        .filter((inv) => {
-          const date = new Date(inv.date_emission);
-          return inv.statut === "PAYEE" && date.getFullYear() === currentYear && date.getMonth() === index;
-        })
-        .reduce((sum, inv) => sum + Number(inv.total_ttc), 0);
-      return { month, total };
-    });
-  }, [invoices, currentYear]);
-
-  const monthlyProfit = useMemo(() => {
-    return invoices
-      .filter((inv) => {
-        const date = new Date(inv.date_emission);
-        return inv.statut === "PAYEE" && date.getFullYear() === currentYear && date.getMonth() === currentMonth;
+    getDashboardStats()
+      .then((stats) => {
+        if (cancelled) return;
+        setState({ ...toData(stats), isLoading: false, error: null });
       })
-      .reduce((sum, inv) => sum + Number(inv.total_ttc), 0);
-  }, [invoices, currentYear, currentMonth]);
+      .catch((err) => {
+        if (cancelled) return;
+        setState((s) => ({ ...s, isLoading: false, error: err?.message ?? "Erreur de chargement" }));
+      });
 
-  const pendingTotal = useMemo(() => {
-    const acceptedQuotes = quotes
-      .filter((q) => q.statut === "ACCEPTE")
-      .reduce((sum, q) => sum + Number(q.total_ttc), 0);
-    const unpaidInvoices = invoices
-      .filter((inv) => inv.statut === "ENVOYEE" || inv.statut === "EN_RETARD")
-      .reduce((sum, inv) => sum + Number(inv.total_ttc), 0);
-    return acceptedQuotes + unpaidInvoices;
-  }, [invoices, quotes]);
+    return () => { cancelled = true; };
+  }, []);
 
-  const upcomingDeadlines = useMemo<UpcomingDeadline[]>(() => {
-    const invoiceDeadlines: UpcomingDeadline[] = invoices
-      .filter((inv) => inv.statut === "ENVOYEE" || inv.statut === "EN_RETARD")
-      .map((inv) => ({
-        id: inv.id,
-        numero: inv.numero,
-        client: inv.client.raison_sociale,
-        date: inv.date_echeance,
-        statut: inv.statut,
-        type: "facture",
-      }));
-
-    const quoteDeadlines: UpcomingDeadline[] = quotes
-      .filter((q) => q.statut === "ENVOYE")
-      .map((q) => ({
-        id: q.id,
-        numero: q.numero,
-        client: q.client.raison_sociale,
-        date: q.date_validite,
-        statut: q.statut,
-        type: "devis",
-      }));
-
-    return [...invoiceDeadlines, ...quoteDeadlines].sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
-  }, [invoices, quotes]);
-
-  const lastTransactions = useMemo(() => {
-    return invoices
-      .filter((inv) => inv.statut === "PAYEE")
-      .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
-      .slice(0, 10);
-  }, [invoices]);
-
-  return { monthlyRevenue, monthlyProfit, pendingTotal, upcomingDeadlines, lastTransactions };
+  return state;
 }
