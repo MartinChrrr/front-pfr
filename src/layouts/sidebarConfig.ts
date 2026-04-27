@@ -2,8 +2,6 @@ import {
   LayoutDashboard,
   FileText,
   Users,
-  Calendar,
-  CircleUserRound,
   Settings,
 } from "lucide-react";
 import type { SidebarEntry } from "./Sidebar";

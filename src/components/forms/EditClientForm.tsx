@@ -101,7 +101,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
             aria-required="true"
             {...register("telephone", {
               required: "Téléphone requis",
-              pattern: { value: /^[0-9\s\+\-\.]{10,15}$/,
+              pattern: { value: /^[0-9\s+\-.]{10,15}$/,
               message: "Téléphone invalide" }
               })}
 
@@ -146,7 +146,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
           <input
             type="tel"
             {...register("contact_telephone",
-            {pattern: { value: /^[0-9\s\+\-\.]{10,15}$/, 
+            {pattern: { value: /^[0-9\s+\-.]{10,15}$/,
             message: "Téléphone invalide" }
             })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"
@@ -203,7 +203,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
             type="text"
             aria-required="true"
             {...register("ville", { required: "Ville requise",
-            pattern: { value: /^[a-zA-ZÀ-ÿ\s\-]+$/,
+            pattern: { value: /^[a-zA-ZÀ-ÿ\s-]+$/,
             message: "Ville invalide" }
             })}
             className="w-full rounded-lg border border-text-placeholder px-3 py-2 outline-none focus:border-primary-300"

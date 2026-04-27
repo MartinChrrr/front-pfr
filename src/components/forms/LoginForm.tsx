@@ -6,7 +6,6 @@ import { useAuth } from "../../hooks/useAuth";
 import { handleFormErrors } from "../../api/handleFormErrors";
 import type { LoginRequest } from "../../types/auth";
 import Button from "../ui/Button";
-import Separator from "../ui/Separator";
 
 export default function LoginForm() {
   const { login } = useAuth();
