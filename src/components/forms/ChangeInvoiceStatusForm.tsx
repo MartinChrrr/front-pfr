@@ -36,6 +36,7 @@ export default function ChangeInvoiceStatusForm({ formId, currentStatus, onSubmi
 
   return (
     <form id={formId} onSubmit={handleSubmit((data) => onSubmit(data.statut))} className="flex flex-col gap-5">
+      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
       <div className="flex flex-col gap-[10px]">
         <label className="font-medium">
           Nouveau statut <span className="text-alert">*</span>
