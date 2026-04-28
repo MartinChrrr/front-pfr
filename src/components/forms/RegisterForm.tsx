@@ -7,6 +7,8 @@ import { handleFormErrors } from "../../api/handleFormErrors";
 import type { RegisterRequest } from "../../types/auth";
 import Button from "../ui/Button";
 
+type RegisterFormData = RegisterRequest & { accept_cgu: boolean };
+
 export default function RegisterForm() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -19,15 +21,15 @@ export default function RegisterForm() {
     setError,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterRequest>();
+  } = useForm<RegisterFormData>();
 
-  const onSubmit = async (data: RegisterRequest) => {
+  const onSubmit = async ({ accept_cgu: _, ...data }: RegisterFormData) => {
     setGlobalError(null);
     try {
       await apiRegister(data);
       navigate("/onboarding");
     } catch (error) {
-      const message = handleFormErrors<RegisterRequest>(error, setError);
+      const message = handleFormErrors<RegisterFormData>(error, setError);
       if (message) setGlobalError(message);
     }
   };
@@ -147,6 +149,26 @@ export default function RegisterForm() {
         </div>
         {errors.password_confirm && (
           <p className="mt-1 text-sm text-alert">{errors.password_confirm.message}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            {...register("accept_cgu", { required: "Vous devez accepter les CGU pour continuer" })}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-primary-500 cursor-pointer"
+          />
+          <span className="text-xs text-text-placeholder leading-relaxed">
+            En créant un compte, j'accepte les{" "}
+            <NavLink to="/cgu" target="_blank" className="text-primary-500 underline hover:text-primary-700">
+              Conditions Générales d'Utilisation (CGU)
+            </NavLink>{" "}
+            et je consens au traitement de mes données personnelles conformément à la politique de confidentialité.
+          </span>
+        </label>
+        {errors.accept_cgu && (
+          <p className="text-xs text-alert">{errors.accept_cgu.message}</p>
         )}
       </div>
 
