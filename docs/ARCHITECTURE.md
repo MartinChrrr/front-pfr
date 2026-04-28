@@ -21,7 +21,7 @@ Front-PFR est une application de gestion commerciale (devis, factures, clients) 
 | Icones         | Lucide React       | 0.563   | Bibliotheque d'icones SVG                   |
 | Date/Heure     | Luxon              | 3.7     | Manipulation et formatage de dates          |
 | Police         | Inter Variable     | -       | Police d'interface via @fontsource          |
-| Graphiques     | Recharts           | -       | Graphiques du dashboard                     |
+| Graphiques     | Recharts           | 3.8     | Graphiques du dashboard                     |
 | Tests          | Vitest             | 4       | Test runner                                 |
 | Tests DOM      | Testing Library    | 16      | Tests de composants React                   |
 | Mocks API      | MSW                | 2       | Mock Service Worker pour les tests          |
@@ -51,8 +51,9 @@ src/
 │   ├── quotes.ts                  #   CRUD devis + changement statut + PDF
 │   ├── invoices.ts                #   CRUD factures + statut + PDF + creation depuis devis
 │   ├── services.ts                #   CRUD prestations
+│   ├── dashboard.ts               #   Stats agregees du tableau de bord (GET /dashboard/stats/)
 │   ├── handleFormErrors.ts        #   Mapping erreurs JSend → React Hook Form
-│   └── index.ts                   #   Re-exports
+│   └── index.ts                   #   Re-exports (api, tokens, auth, clients, quotes, invoices, services, handleFormErrors — dashboard non re-exporte)
 │
 ├── components/
 │   ├── ui/                        # Composants UI generiques et reutilisables
@@ -96,6 +97,14 @@ src/
 │   ├── Invoices/                  # Composants specifiques factures
 │   │   └── InvoicesDetailsCard.tsx #  Carte detail facture (lignes, totaux)
 │   │
+│   ├── Dashboard/                 # Composants du tableau de bord
+│   │   ├── StatCard.tsx           #   Carte de statistique (titre + valeur)
+│   │   ├── MonthlyRevenueChart.tsx #  Graphique revenus mensuels (Recharts LineChart)
+│   │   ├── UpcomingDeadlinesCard.tsx #  Carte des echeances a venir
+│   │   ├── UpcomingDeadlineRow.tsx #   Ligne d'echeance (devis ou facture)
+│   │   ├── LastTransactionsCard.tsx #   Carte des dernieres transactions
+│   │   └── LastTransactionRow.tsx #   Ligne de transaction
+│   │
 │   ├── ProtectedRoute.tsx         # Guard : redirige vers /login si non authentifie
 │   └── GuestRoute.tsx             # Guard : redirige vers / si authentifie
 │
@@ -104,6 +113,7 @@ src/
 │   ├── useClients.ts              #   Fetch clients avec pagination, search, refresh
 │   ├── useQuotes.ts               #   Fetch devis avec filtres (statut, client, search)
 │   ├── useInvoices.ts             #   Fetch factures avec filtres etendus
+│   ├── useDashboardData.ts        #   Fetch stats du dashboard (consomme /dashboard/stats/)
 │   └── useDebouncedValue.ts       #   Debounce generique (300ms par defaut)
 │
 ├── layouts/                       # Layouts de pages
@@ -134,8 +144,8 @@ src/
 │   └── UserConfiguration.tsx      #   Configuration utilisateur
 │
 ├── types/                         # Definitions TypeScript
-│   ├── index.ts                   #   PaginatedResponse, JSendSuccess/Fail/Error
-│   ├── auth.ts                    #   User, UserConfiguration, LoginRequest, RegisterRequest
+│   ├── index.ts                   #   PaginatedResponse, JSendSuccess/Fail/Error, JSendResponse
+│   ├── auth.ts                    #   User, UserConfiguration, LoginRequest, RegisterRequest, AuthResponse, ProfileUpdateRequest, ConfigurationUpdateRequest
 │   ├── client.ts                  #   Client, Address, AddressType, ClientInput, AddressInput
 │   ├── quote.ts                   #   Quote, QuoteLine, QuoteStatus, QuoteInput
 │   ├── invoice.ts                 #   Invoice, InvoiceLine, InvoiceStatus, InvoiceInput
@@ -307,6 +317,26 @@ L'utilitaire `handleFormErrors<T>()` fait le pont entre les reponses JSend et Re
 | POST    | `/services/`       | `createService()` | Creation                  |
 | PATCH   | `/services/:id/`   | `updateService()` | Mise a jour partielle     |
 | DELETE  | `/services/:id/`   | `deleteService()` | Suppression               |
+
+#### Dashboard (`api/dashboard.ts`)
+
+| Methode | Endpoint              | Fonction              | Description                          |
+| ------- | --------------------- | --------------------- | ------------------------------------ |
+| GET     | `/dashboard/stats/`   | `getDashboardStats()` | Stats agregees du tableau de bord    |
+
+Reponse (`DashboardStats`) :
+
+```typescript
+interface DashboardStats {
+  monthly_revenue: { month: string; total: string }[];   // 12 mois
+  monthly_profit: string;                                 // Total TTC factures payees du mois
+  pending_total: string;                                  // Devis acceptes + factures envoyees/en retard
+  upcoming_deadlines: UpcomingDeadline[];                 // Echeances a venir (devis + factures)
+  last_transactions: LastTransaction[];                   // Dernieres factures payees
+}
+```
+
+Le hook `useDashboardData` consomme cet endpoint et convertit les valeurs `string` en `number` pour les composants graphiques.
 
 ---
 
@@ -791,10 +821,11 @@ Depuis `/factures`, l'utilisateur peut :
 
 ### 5. Dashboard
 
-Le tableau de bord (`/`) affiche :
+Les donnees du tableau de bord (`/`) sont agregees cote backend via l'endpoint `GET /dashboard/stats/`, consomme par le hook `useDashboardData`. La page affiche :
 
-- **Benefice du mois** : total TTC des factures payees du mois en cours
-- **Entrees en attente** : total TTC des devis acceptes + factures envoyees/en retard
-- **Graphique** : revenus par mois de l'annee en cours (Recharts LineChart)
-- **Deadlines a venir** : factures envoyees/en retard + devis envoyes, tries par date
-- **Dernieres transactions** : 10 dernieres factures payees
+- **Benefice mois** (`StatCard`) : total TTC des factures payees du mois en cours
+- **Entree mois** (`StatCard`) : revenus du mois — placeholder, partage actuellement la valeur de "Benefice mois" car aucune charge n'est saisissable (pas de facture negative). La distinction prendra son sens avec la liaison de compte bancaire qui permettra de soustraire les charges
+- **Entrees en attente** (`StatCard`) : total TTC des devis acceptes + factures envoyees/en retard
+- **Graphique** (`MonthlyRevenueChart`) : revenus par mois sur l'annee (Recharts LineChart)
+- **Deadlines a venir** (`UpcomingDeadlinesCard`) : factures envoyees/en retard + devis envoyes, tries par date
+- **Dernieres transactions** (`LastTransactionsCard`) : dernieres factures payees

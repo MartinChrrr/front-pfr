@@ -67,7 +67,9 @@ src/
 │   ├── quotes.ts                  #   CRUD devis + changement statut + PDF
 │   ├── invoices.ts                #   CRUD factures + statut + PDF + creation depuis devis
 │   ├── services.ts                #   CRUD prestations
-│   └── handleFormErrors.ts        #   Mapping erreurs JSend → React Hook Form
+│   ├── dashboard.ts               #   Stats agregees du tableau de bord
+│   ├── handleFormErrors.ts        #   Mapping erreurs JSend → React Hook Form
+│   └── index.ts                   #   Re-exports (api, tokens, auth, clients, quotes, invoices, services, handleFormErrors)
 │
 ├── components/
 │   ├── ui/                        # Composants UI reutilisables
@@ -84,14 +86,16 @@ src/
 │   ├── Client/                    # Composants specifiques clients
 │   ├── Quotes/                    # Composants specifiques devis
 │   ├── Invoices/                  # Composants specifiques factures
+│   ├── Dashboard/                 # Composants du tableau de bord (StatCard, MonthlyRevenueChart, UpcomingDeadlinesCard, LastTransactionsCard)
 │   ├── ProtectedRoute.tsx         # Guard : routes authentifiees
 │   └── GuestRoute.tsx             # Guard : routes invites uniquement
 │
 ├── hooks/                         # Custom hooks React
-│   ├── useAuth.tsx                #   Contexte auth (user, config, login, logout)
+│   ├── useAuth.tsx                #   Contexte auth (user, config, login, logout, refreshUser)
 │   ├── useClients.ts              #   Fetch clients avec pagination et recherche
 │   ├── useQuotes.ts               #   Fetch devis avec filtres
 │   ├── useInvoices.ts             #   Fetch factures avec filtres
+│   ├── useDashboardData.ts        #   Fetch stats du dashboard (endpoint /dashboard/stats/)
 │   └── useDebouncedValue.ts       #   Debounce generique (300ms)
 │
 ├── layouts/                       # Layouts de pages
@@ -192,9 +196,12 @@ Accessibles uniquement aux utilisateurs connectes. Redirection vers `/login` sin
 
 ### Dashboard
 
-- Benefice du mois (factures payees)
-- Entrees en attente (devis acceptes + factures non payees)
-- Graphique des revenus annuels (Recharts)
+Donnees agregees cote backend via l'endpoint `GET /dashboard/stats/` (consomme par le hook `useDashboardData`).
+
+- **Benefice mois** : total TTC des factures payees du mois en cours
+- **Entree mois** : revenus du mois (placeholder, partage actuellement la valeur de "Benefice mois" — la distinction prendra son sens avec la liaison de compte bancaire qui permettra de soustraire les charges)
+- **Entrees en attente** : devis acceptes + factures envoyees/en retard
+- Graphique des revenus mensuels de l'annee (Recharts LineChart)
 - Deadlines a venir et dernieres transactions
 
 ### Parametres
