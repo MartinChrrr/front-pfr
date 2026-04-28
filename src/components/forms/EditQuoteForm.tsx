@@ -76,6 +76,7 @@ export default function EditQuoteForm({ formId, clients, defaultValues, onSubmit
 
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
       <div className="flex flex-col md:flex-row gap-5">
         <div className="flex flex-1 flex-col gap-[10px]">
           <label className="font-medium">
