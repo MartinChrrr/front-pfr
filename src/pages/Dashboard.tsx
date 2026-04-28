@@ -12,7 +12,7 @@ export default function Dashboard() {
     <MainLayout>
       <h1 className="text-2xl font-bold text-text-black">Dashboard</h1>
 
-      <div className="flex gap-5">
+      <div className="flex flex-col md:flex-row gap-5">
         <StatCard title="Bénéfice mois" value={monthlyProfit} />
         <StatCard title="Entrée mois" value={monthlyProfit} />
         <StatCard title="Entrées en attente" value={pendingTotal} />
@@ -20,7 +20,7 @@ export default function Dashboard() {
 
       <MonthlyRevenueChart data={monthlyRevenue} />
 
-      <div className="flex gap-5">
+      <div className="flex flex-col md:flex-row gap-5">
         <UpcomingDeadlinesCard deadlines={upcomingDeadlines} />
         <LastTransactionsCard transactions={lastTransactions} />
       </div>

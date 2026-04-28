@@ -12,6 +12,7 @@ import Register from './pages/Register'
 import Onboarding from './pages/Onboarding'
 import OnboardingConfiguration from './pages/OnboardingConfiguration'
 import Settings from './pages/Settings'
+import CGU from './pages/CGU'
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestRoute from './components/GuestRoute'
 import { AuthProvider } from './hooks/useAuth'
@@ -20,6 +21,8 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
+        <Route path="/cgu" element={<CGU />} />
+
         <Route element={<GuestRoute />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
