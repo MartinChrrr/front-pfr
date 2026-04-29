@@ -15,7 +15,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
     navigate("/login");
   };
 
-  const logo = <span className="text-xl font-bold text-white">Logo</span>;
+  const logo = <span className="text-xl font-bold text-white">DMT</span>;
 
   return (
     <div className="flex h-screen flex-col md:flex-row">

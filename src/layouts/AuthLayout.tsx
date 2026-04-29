@@ -21,7 +21,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             <path d="M7 12h10" />
             <path d="M7 16h10" />
           </svg>
-          <span className="text-2xl font-bold">Logo</span>
+          <span className="text-2xl font-bold">DMT</span>
         </div>
 
         {children}
