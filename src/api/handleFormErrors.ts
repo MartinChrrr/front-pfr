@@ -15,15 +15,23 @@ export function handleFormErrors<T extends FieldValues>(
 
   const { status, data } = error.response;
 
-  // Validation errors (400) — JSend "fail"
-  if (status === 400 && data?.status === "fail" && data.data) {
-    const fieldErrors: Record<string, string[]> = data.data;
-    for (const [field, messages] of Object.entries(fieldErrors)) {
-      if (Array.isArray(messages) && messages.length > 0) {
-        setError(field as Path<T>, { type: "server", message: messages[0] });
-      }
+  // JSend "fail"
+  if (data?.status === "fail" && data.data) {
+    // Single message (e.g. invalid credentials): { detail: "..." }
+    if (typeof data.data.detail === "string") {
+      return data.data.detail;
     }
-    return null;
+
+    // Validation errors (typically 400): { field: ["msg", ...] }
+    if (status === 400) {
+      const fieldErrors: Record<string, string[]> = data.data;
+      for (const [field, messages] of Object.entries(fieldErrors)) {
+        if (Array.isArray(messages) && messages.length > 0) {
+          setError(field as Path<T>, { type: "server", message: messages[0] });
+        }
+      }
+      return null;
+    }
   }
 
   // Server error (500) — JSend "error"
