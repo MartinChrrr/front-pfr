@@ -49,7 +49,7 @@ export default function EditClientForm({ client, formId, onSubmit }: EditClientF
   return (
     <form id={formId} onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
 
-      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
+      <p className="text-sm">Les champs marqués d'un <span className="text-alert">*</span> sont obligatoires.</p>
 
     {/* ### Enterprise name ### */}
       <div className="flex flex-col gap-[10px]">

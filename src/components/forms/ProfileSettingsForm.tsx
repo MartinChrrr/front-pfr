@@ -55,7 +55,7 @@ export default function ProfileSettingsForm() {
         <p className="text-sm text-success">Modifications enregistrées avec succès.</p>
       )}
 
-      <p className="text-sm">Les champs marqués d'un <abbr title="astérisque">*</abbr> sont obligatoires.</p>
+      <p className="text-sm">Les champs marqués d'un <span className="text-alert">*</span> sont obligatoires.</p>
 
       <div className="flex flex-col md:flex-row gap-[31px]">
         <div className="flex flex-1 flex-col gap-[10px]">
