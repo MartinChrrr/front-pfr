@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { getQuotes, type QuoteFilters } from "../api/quotes";
+import { extractErrorMessage } from "../api/extractErrorMessage";
 import { quoteToRow } from "../utils/mappers";
 import type { Quote } from "../types/quote";
 import type { DevisRowData } from "../components/ui/table/DevisRow";
@@ -34,7 +35,7 @@ export function useQuotes(filters?: QuoteFilters) {
       })
       .catch((err) => {
         if (!cancelled) {
-          setError(err?.message ?? "Erreur de chargement");
+          setError(extractErrorMessage(err, "Erreur de chargement"));
           setIsLoading(false);
         }
       });

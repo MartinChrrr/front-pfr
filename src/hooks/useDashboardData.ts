@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getDashboardStats } from "../api/dashboard";
+import { extractErrorMessage } from "../api/extractErrorMessage";
 import type { DashboardStats, LastTransaction, UpcomingDeadline } from "../api/dashboard";
 
 export type { LastTransaction, UpcomingDeadline };
@@ -53,7 +54,7 @@ export function useDashboardData(): DashboardData {
       })
       .catch((err) => {
         if (cancelled) return;
-        setState((s) => ({ ...s, isLoading: false, error: err?.message ?? "Erreur de chargement" }));
+        setState((s) => ({ ...s, isLoading: false, error: extractErrorMessage(err, "Erreur de chargement") }));
       });
 
     return () => { cancelled = true; };

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { getInvoices, type InvoiceFilters } from "../api/invoices";
+import { extractErrorMessage } from "../api/extractErrorMessage";
 import { invoiceToRow } from "../utils/mappers";
 import type { Invoice } from "../types/invoice";
 import type { FactureRowData } from "../components/ui/table/FactureRow";
@@ -34,7 +35,7 @@ export function useInvoices(filters?: InvoiceFilters) {
       })
       .catch((err) => {
         if (!cancelled) {
-          setError(err?.message ?? "Erreur de chargement");
+          setError(extractErrorMessage(err, "Erreur de chargement"));
           setIsLoading(false);
         }
       });

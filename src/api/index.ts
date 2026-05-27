@@ -6,3 +6,4 @@ export * from "./services";
 export * from "./quotes";
 export * from "./invoices";
 export { handleFormErrors } from "./handleFormErrors";
+export { extractErrorMessage } from "./extractErrorMessage";
