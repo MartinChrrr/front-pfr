@@ -88,7 +88,7 @@ export default function EditQuoteForm({ formId, clients, defaultValues, onSubmit
           >
             <option value="">Sélectionner un client</option>
             {clients.map((c) => (
-              <option key={c.id} value={c.id}>{c.email}</option>
+              <option key={c.id} value={c.id}>{c.raison_sociale}</option>
             ))}
           </select>
           {errors.client_id && (

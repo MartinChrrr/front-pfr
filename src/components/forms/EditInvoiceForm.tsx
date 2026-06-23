@@ -90,7 +90,7 @@ export default function EditInvoiceForm({ formId, clients, defaultValues, onSubm
           >
             <option value="">Sélectionner un client</option>
             {clients.map((c) => (
-              <option key={c.id} value={c.id}>{c.email}</option>
+              <option key={c.id} value={c.id}>{c.raison_sociale}</option>
             ))}
           </select>
           {errors.client_id && (
